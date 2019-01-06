@@ -8,7 +8,8 @@ exports.createUser = (req, res) => {
     email: req.body.email,
     contact_no: req.body.contact_no,
     city: req.body.city,
-    skills: req.body.skills
+    skills: req.body.skills, 
+    user_image: req.file.path
   });
   newUser
     .save()

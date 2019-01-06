@@ -5,7 +5,7 @@ var UserSchema = mongoose.Schema({
     job_description: String, 
     job_category: String, 
     job_location: String, 
-    user_id: req.params.user_id
+    user_id: mongoose.Schema.Types.ObjectId
 
 }, {
     timestamp: true

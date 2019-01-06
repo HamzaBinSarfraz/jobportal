@@ -5,7 +5,7 @@ exports.createPost = (req, res) => {
     job_title: req.body.job_title,
     job_description: req.body.job_description,
     job_category: req.body.job_category,
-    job_location: req.body.job_location, 
+    job_location: req.body.job_location,
     user_id: req.params.user_id
   });
   newPost
@@ -60,6 +60,7 @@ exports.findOnePost = (req, res) => {
     .then(post => {
       if (!post) {
         return res.status(200).send({
+          status: false,
           message: "post not found with id " + req.params.postId
         });
       }
@@ -71,6 +72,7 @@ exports.findOnePost = (req, res) => {
     .catch(err => {
       if (err.kind === "ObjectId") {
         return res.status(200).send({
+          status: false,
           message: "post not found with id " + req.params.postId
         });
       }
@@ -89,7 +91,7 @@ exports.updatePost = (req, res) => {
         job_title: req.body.job_title,
         job_description: req.body.job_description,
         job_category: req.body.job_category,
-        job_location: req.body.job_location, 
+        job_location: req.body.job_location,
         user_id: req.params.user_id
       }
     },
@@ -112,6 +114,31 @@ exports.updatePost = (req, res) => {
       return res.status(200).send({
         status: false,
         message: err.message
+      });
+    });
+};
+
+exports.deletePost = (req, res) => {
+  UserPost.deleteOne({
+    _id: req.params.postId
+  })
+    .then(data => {
+      if (data) {
+        return res.status(200).send({
+          status: true,
+          message: "post deleted successfully by id " + req.params.postId
+        });
+      } else {
+        return res.status(200).send({
+          status: false,
+          message: "post can not deleted by id " + req.params.postId
+        });
+      }
+    })
+    .catch(err => {
+      return res.status(200).send({
+        status: false,
+        message: "an error occured while deleting " + err.message
       });
     });
 };

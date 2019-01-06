@@ -5,5 +5,6 @@ module.exports = app => {
     app.get('/userpost', UserPost.getAllPost);
     app.get('/userpost/:postId', UserPost.findOnePost);
     app.put('/userpost/:postId', UserPost.updatePost);
+    app.delete('/userpost/:postId', UserPost.deletePost);
   };
   

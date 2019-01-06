@@ -13,7 +13,8 @@ var UserSchema = mongoose.Schema({
     }, 
     contact_no: Number, 
     city: String, 
-    skills: String
+    skills: String, 
+    user_image: String
 
 }, {
     timestamp: true
