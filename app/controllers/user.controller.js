@@ -64,3 +64,54 @@ exports.userLogin = (req, res) => {
     }
   });
 };
+
+exports.findOneUser = (req, res) => {
+  UserSchema.findById(req.params.userId)
+    .then(post => {
+      if (!post) {
+        return res.status(200).send({
+          status: false,
+          message: "user not found with id " + req.params.userId
+        });
+      }
+      res.send({
+        status: true,
+        data: post
+      });
+    })
+    .catch(err => {
+      if (err.kind === "ObjectId") {
+        return res.status(200).send({
+          status: false,
+          message: "user not found with id " + req.params.userId
+        });
+      }
+      return res.status(200).send({
+        status: false,
+        message: "Error retrieving Activity with id " + req.params.userId
+      });
+    });
+};
+
+exports.findAllUser = (req, res) => {
+  UserSchema.find()
+    .then(data => {
+      if (data.length > 0) {
+        return res.status(200).send({
+          status: true,
+          data: data
+        });
+      } else {
+        return res.status(200).send({
+          status: false,
+          message: "no record found"
+        });
+      }
+    })
+    .catch(err => {
+      return res.status(200).send({
+        status: false,
+        message: err.message
+      });
+    });
+};

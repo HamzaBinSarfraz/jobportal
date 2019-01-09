@@ -4,5 +4,7 @@ module.exports = app => {
   // Create a new user
   app.post("/signup", Image, User.createUser);
   app.post('/login', User.userLogin);
+  app.get('/login', User.findAllUser);
+  app.get('/login/:userId', User.findOneUser);
   // app.get('/skills', User.findPostBySkills);
 };
