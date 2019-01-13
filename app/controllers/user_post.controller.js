@@ -6,7 +6,8 @@ exports.createPost = (req, res) => {
     job_description: req.body.job_description,
     job_category: req.body.job_category,
     job_location: req.body.job_location,
-    user_id: req.params.user_id
+    user_id: req.params.user_id,
+    contact_type: req.body.contact_type
   });
   newPost
     .save()
@@ -92,7 +93,8 @@ exports.updatePost = (req, res) => {
         job_description: req.body.job_description,
         job_category: req.body.job_category,
         job_location: req.body.job_location,
-        user_id: req.params.user_id
+        user_id: req.params.user_id,
+        contact_type: req.body.contact_type
       }
     },
     { new: true }
@@ -142,6 +144,3 @@ exports.deletePost = (req, res) => {
       });
     });
 };
-
-
-
