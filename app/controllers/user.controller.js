@@ -118,7 +118,7 @@ exports.findAllUser = (req, res) => {
 
 exports.deleteUser = (req, res) => {
   UserSchema.deleteOne({
-    _id: req.params.id
+    _id: req.params.userId
   })
     .then(data => {
       if (data) {

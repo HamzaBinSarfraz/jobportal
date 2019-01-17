@@ -6,5 +6,5 @@ module.exports = app => {
   app.post('/login', User.userLogin);
   app.get('/login', User.findAllUser);
   app.get('/login/:userId', User.findOneUser);
-  // app.get('/skills', User.findPostBySkills);
+  app.delete('/login/:userId', User.deleteUser);
 };
