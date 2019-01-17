@@ -115,3 +115,23 @@ exports.findAllUser = (req, res) => {
       });
     });
 };
+
+exports.deleteUser = (req, res) => {
+  UserSchema.deleteOne({
+    _id: req.params.id
+  })
+    .then(data => {
+      if (data) {
+        return res.status(200).send({
+          status: true,
+          message: "deleted successfully"
+        });
+      }
+    })
+    .catch(err => {
+      return res.status(200).send({
+        status: true,
+        message: err.message
+      });
+    });
+};
