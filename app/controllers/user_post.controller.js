@@ -108,7 +108,7 @@ exports.updatePost = (req, res) => {
       } else {
         return res.status(200).send({
           status: true,
-          message: "updated statusfully"
+          message: "updated successfully"
         });
       }
     })
