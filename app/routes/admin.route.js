@@ -4,5 +4,6 @@ module.exports = app => {
     app.post("/admin", Admin.createUser);
     app.put('/admin/:id', Admin.updatePost);
     app.get('/admin', Admin.getAll);
+    app.get('/admin/:id', Admin.getOne);
   };
   

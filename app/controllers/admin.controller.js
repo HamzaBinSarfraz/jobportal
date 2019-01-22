@@ -72,3 +72,21 @@ exports.getAll = (req, res) => {
       });
     });
 };
+
+exports.getOne = (req, res) => {
+  AdminSchema.findOne({
+    _id: req.params.id
+  })
+    .then(data => {
+      res.status(200).send({
+        status: true,
+        data: data
+      });
+    })
+    .catch(err => {
+      res.status(200).send({
+        status: true,
+        message: err.message
+      });
+    });
+};
