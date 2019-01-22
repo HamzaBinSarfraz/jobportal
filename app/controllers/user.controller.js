@@ -36,28 +36,35 @@ exports.createUser = (req, res) => {
 };
 
 exports.userLogin = (req, res) => {
-  
+  let password = req.body.password;
   UserSchema.findOne({
     name: req.body.username
   }).then(data => {
     if (data) {
-      var str = data.skills.join();
-      var array = str.split(",");
+      if (data.password === req.body.password) {
+        var str = data.skills.join();
+        var array = str.split(",");
 
-      UserPost.find({ job_category: { $in: array } })
-        .then(newData => {
-          return res.status(200).send({
-            status: true,
-            data: newData, 
-            userData: data
+        UserPost.find({ job_category: { $in: array } })
+          .then(newData => {
+            return res.status(200).send({
+              status: true,
+              data: newData,
+              userData: data
+            });
+          })
+          .catch(err => {
+            return res.status(200).send({
+              status: false,
+              message: err.message
+            });
           });
+      } else {
+        return res.status(200).send({
+          status: false, 
+          message: "incorrect password"
         })
-        .catch(err => {
-          return res.status(200).send({
-            status: false,
-            message: err.message
-          });
-        });
+      }
     } else {
       return res.status(200).send({
         status: false,
