@@ -36,8 +36,9 @@ exports.createUser = (req, res) => {
 };
 
 exports.userLogin = (req, res) => {
+  
   UserSchema.findOne({
-    username: req.body.username
+    name: req.body.username
   }).then(data => {
     if (data) {
       var str = data.skills.join();
