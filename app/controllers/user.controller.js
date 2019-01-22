@@ -48,7 +48,8 @@ exports.userLogin = (req, res) => {
         .then(newData => {
           return res.status(200).send({
             status: true,
-            data: newData
+            data: newData, 
+            userData: data
           });
         })
         .catch(err => {
