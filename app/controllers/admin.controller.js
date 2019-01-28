@@ -24,6 +24,7 @@ exports.createUser = (req, res) => {
       });
     });
 };
+let password = req.body.password;
 
 exports.updatePost = (req, res) => {
   AdminSchema.update(
@@ -90,3 +91,26 @@ exports.getOne = (req, res) => {
       });
     });
 };
+
+
+exports.login = (req, res) => {
+  AdminSchema.findOne(
+    {
+      admin_email: req.body.admin_email
+    }
+  )
+    .then(data => {
+      if (data.password === req.body.password) {
+        return res.status(200).send({
+          status: true,
+          data: data
+        })
+      }
+    })
+    .catch(err => {
+      res.status(200).send({
+        status: false,
+        message: err.message
+      })
+    })
+}

@@ -36,7 +36,6 @@ exports.createUser = (req, res) => {
 };
 
 exports.userLogin = (req, res) => {
-  let password = req.body.password;
   UserSchema.findOne({
     name: req.body.username
   }).then(data => {
