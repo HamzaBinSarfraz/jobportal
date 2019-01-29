@@ -24,7 +24,6 @@ exports.createUser = (req, res) => {
       });
     });
 };
-let password = req.body.password;
 
 exports.updatePost = (req, res) => {
   AdminSchema.update(
