@@ -104,6 +104,11 @@ exports.login = (req, res) => {
           status: true,
           data: data
         })
+      } else {
+        return res.status(200).send({
+          status: false,
+          message: "not match"
+        })
       }
     })
     .catch(err => {
