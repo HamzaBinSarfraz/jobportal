@@ -37,9 +37,10 @@ exports.createUser = (req, res) => {
 
 exports.userLogin = (req, res) => {
   UserSchema.findOne({
-    name: req.body.username
+    username: req.body.username
   }).then(data => {
-    if (data) {
+    if (data) { 
+      
       if (data.password === req.body.password) {
         var str = data.skills.join();
         var array = str.split(",");
