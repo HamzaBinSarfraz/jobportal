@@ -3,7 +3,6 @@ const UserPost = require("../models/user_post.model");
 
 exports.createUser = (req, res) => {
   var newUser = new UserSchema({
-    name: req.body.name,
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
@@ -40,8 +39,12 @@ exports.userLogin = (req, res) => {
     username: req.body.username
   }).then(data => {
     if (data) { 
+      console.log(data.password);
+
+      console.log(req.body.password);
       
-      if (data.password === req.body.password) {
+      
+      if (data.password.trim() === req.body.password.trim()) {
         var str = data.skills.join();
         var array = str.split(",");
 
