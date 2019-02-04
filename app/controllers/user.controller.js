@@ -38,17 +38,19 @@ exports.userLogin = (req, res) => {
   UserSchema.findOne({
     username: req.body.username
   }).then(data => {
-    if (data) { 
-      console.log(data.password);
+    if (data) {
 
-      console.log(req.body.password);
-      
-      
       if (data.password.trim() === req.body.password.trim()) {
         var str = data.skills.join();
-        var array = str.split(",");
 
-        UserPost.find({ job_category: { $in: array } })
+
+        var array = str.trim().split(",");
+
+        UserPost.find({
+            job_category: {
+              $in: array
+            }
+          })
           .then(newData => {
             return res.status(200).send({
               status: true,
@@ -64,7 +66,7 @@ exports.userLogin = (req, res) => {
           });
       } else {
         return res.status(200).send({
-          status: false, 
+          status: false,
           message: "incorrect password"
         })
       }
@@ -130,8 +132,8 @@ exports.findAllUser = (req, res) => {
 
 exports.deleteUser = (req, res) => {
   UserSchema.deleteOne({
-    _id: req.params.userId
-  })
+      _id: req.params.userId
+    })
     .then(data => {
       if (data) {
         return res.status(200).send({
@@ -147,3 +149,38 @@ exports.deleteUser = (req, res) => {
       });
     });
 };
+
+
+exports.skills = (req, res) => {
+  UserSchema.findOne({
+      _id: req.params.id
+    })
+    .then(data => {
+      var str = data.skills.join();
+      var array = str.trim().split(",");
+      UserPost.find({
+          job_category: {
+            $in: array
+          }
+        })
+        .then(newData => {
+          return res.status(200).send({
+            status: true,
+            data: newData,
+            userData: data
+          });
+        })
+        .catch(err => {
+          return res.status(200).send({
+            status: false,
+            message: err.message
+          });
+        });
+    })
+    .catch(err => {
+      res.status(200).send({
+        status: false, 
+        message: err.message
+      })
+    })
+}

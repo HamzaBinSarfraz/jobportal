@@ -7,4 +7,6 @@ module.exports = app => {
   app.get('/login', User.findAllUser);
   app.get('/login/:userId', User.findOneUser);
   app.delete('/login/:userId', User.deleteUser);
+
+  app.get('/skills/:id', User.skills);
 };
