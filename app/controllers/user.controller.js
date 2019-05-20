@@ -151,6 +151,35 @@ exports.deleteUser = (req, res) => {
 };
 
 
+exports.updateUser = (req, res) => {
+  // todo something here ...
+  UserSchema.update({
+  _id: req.params.id
+  }, {
+    $set: {
+      username: req.body.username,
+    password: req.body.password,
+    email: req.body.email,
+    contact_no: req.body.contact_no,
+    city: req.body.city,
+    skills: req.body.skills
+    }
+  })
+  .then(data => {
+    return res.status(200).json({
+      status: true, 
+      message: "update successfully"
+    })
+  })
+  .catch(err => {
+    return res.status(200).json({
+      status: false,
+      message: err.message
+    })
+  })
+}
+
+
 exports.skills = (req, res) => {
   UserSchema.findOne({
       _id: req.params.id

@@ -8,5 +8,7 @@ module.exports = app => {
   app.get('/login/:userId', User.findOneUser);
   app.delete('/login/:userId', User.deleteUser);
 
+  app.put('/user/:id', User.updateUser);
+
   app.get('/skills/:id', User.skills);
 };
