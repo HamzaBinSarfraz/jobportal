@@ -6,8 +6,11 @@ var UserSchema = mongoose.Schema({
     job_category: String, 
     job_location: String, 
     user_id: mongoose.Schema.Types.ObjectId, 
-    contact_type: String
-
+    contact_type: String,
+    status: {
+        type: String,
+        enum: ['not assigned', 'assigned', 'completed']
+    }
 }, {
     timestamp: true
 })

@@ -11,4 +11,9 @@ module.exports = app => {
   app.put('/user/:id', User.updateUser);
 
   app.get('/skills/:id', User.skills);
+
+  
+
+  // app.put('user/:id', User.updatePassword);
+  // app.put('user/:');
 };

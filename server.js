@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 var cors = require("cors");
+const morgan = require('morgan');
 
 // create express app npm
 const app = express();
@@ -11,6 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
+
+app.use(morgan("dev"));
 
 // Configuring the database
 const dbConfig = require("./config/db.config.js");
