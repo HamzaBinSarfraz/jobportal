@@ -144,3 +144,46 @@ exports.deletePost = (req, res) => {
       });
     });
 };
+
+
+
+exports.search = (req, res) => {
+
+  const jobTitle = req.body.job_title;
+  const jobCat = req.body.job_category;
+  let startDate = req.body.start_date;
+  let endDate = req.body.end_date;
+
+
+  if (endDate == '' || startDate == '') {
+    endDate = Date.now();
+    startDate = Date.now();
+  }
+  UserPost.aggregate([
+    {
+      $match: {
+        $or: [{
+          job_title: {
+            $regex: "^" + jobTitle,
+            $options: "i"
+          },
+          job_category: {
+            $regex: "^" + jobCat,
+            $options: "i"
+          },
+          createdAt: {
+            $gte: new Date(startDate),
+            $lte: new Date(endDate)
+          }
+        }]
+      }
+    }
+  ]).exec((err, data) => {
+    if (err) {
+      res.json(err.message);
+    } else {
+      res.json(data);
+    }
+  })
+
+}

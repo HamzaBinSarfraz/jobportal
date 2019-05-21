@@ -6,7 +6,7 @@ var AdminSchema = mongoose.Schema(
     password: String
   },
   {
-    timestamp: true
+    timestamps: true
   }
 );
 

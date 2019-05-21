@@ -8,7 +8,9 @@ module.exports = app => {
   app.get('/login/:userId', User.findOneUser);
   app.delete('/login/:userId', User.deleteUser);
 
-  app.put('/user/:id', User.updateUser);
+  app.put('/updatepassword/:id', User.updatePassword);
+
+  app.post('/fogotpassword', User.forgotPassword);
 
   app.get('/skills/:id', User.skills);
 

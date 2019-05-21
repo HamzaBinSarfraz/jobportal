@@ -13,11 +13,12 @@ var UserSchema = mongoose.Schema(
     },
     contact_no: Number,
     city: String,
+    coutry: String,
     skills: [String],
     user_image: String
   },
   {
-    timestamp: true
+    timestamps: true
   }
 );
 

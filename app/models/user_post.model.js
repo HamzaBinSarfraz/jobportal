@@ -12,7 +12,7 @@ var UserSchema = mongoose.Schema({
         enum: ['not assigned', 'assigned', 'completed']
     }
 }, {
-    timestamp: true
+    timestamps: true
 })
 
 module.exports = mongoose.model('userpost', UserSchema);

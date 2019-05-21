@@ -6,5 +6,7 @@ module.exports = app => {
     app.get('/userpost/:postId', UserPost.findOnePost);
     app.put('/userpost/:postId', UserPost.updatePost);
     app.delete('/userpost/:postId', UserPost.deletePost);
+
+    app.post('/userpost/search', UserPost.search);
   };
   

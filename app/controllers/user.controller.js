@@ -1,5 +1,9 @@
 const UserSchema = require("../models/user.model");
 const UserPost = require("../models/user_post.model");
+const nodemailer = require('nodemailer');
+const admin = require("firebase-admin");
+const serviceAccount = require("../../config/jobportal-fcm.json");
+
 
 exports.createUser = (req, res) => {
   var newUser = new UserSchema({
@@ -47,10 +51,10 @@ exports.userLogin = (req, res) => {
         var array = str.trim().split(",");
 
         UserPost.find({
-            job_category: {
-              $in: array
-            }
-          })
+          job_category: {
+            $in: array
+          }
+        })
           .then(newData => {
             return res.status(200).send({
               status: true,
@@ -132,8 +136,8 @@ exports.findAllUser = (req, res) => {
 
 exports.deleteUser = (req, res) => {
   UserSchema.deleteOne({
-      _id: req.params.userId
-    })
+    _id: req.params.userId
+  })
     .then(data => {
       if (data) {
         return res.status(200).send({
@@ -151,47 +155,112 @@ exports.deleteUser = (req, res) => {
 };
 
 
-exports.updateUser = (req, res) => {
-  // todo something here ...
-  UserSchema.update({
-  _id: req.params.id
-  }, {
-    $set: {
-      username: req.body.username,
-    password: req.body.password,
-    email: req.body.email,
-    contact_no: req.body.contact_no,
-    city: req.body.city,
-    skills: req.body.skills
-    }
-  })
-  .then(data => {
-    return res.status(200).json({
-      status: true, 
-      message: "update successfully"
-    })
-  })
-  .catch(err => {
+exports.updatePassword = (req, res) => {
+
+  if (!req.body.password) {
     return res.status(200).json({
       status: false,
-      message: err.message
+      message: 'Password can not be null'
     })
+  } else {
+    UserSchema.update({
+      _id: req.params.id
+    }, {
+        $set: {
+          password: req.body.password
+        }
+      })
+      .then(data => {
+        return res.status(200).json({
+          status: true,
+          message: "Password update successfully"
+        })
+      })
+      .catch(err => {
+        return res.status(200).json({
+          status: false,
+          message: 'Password not updated ' + err.message
+        })
+      })
+  }
+}
+
+exports.forgotPassword = (req, res) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'youremail@gmail.com',
+      pass: 'yourpassword'
+    }
+  });
+
+  const mailOptions = {
+    from: 'youremail@gmail.com',
+    to: req.body.email,
+    subject: 'Sending Email using Node.js',
+    text: 'That was easy!'
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+      res.json(error.message)
+    } else {
+      console.log('Email sent: ' + info.response);
+      res.json(info.response)
+    }
+  });
+}
+
+
+exports.sendNotification = (req, res) => {
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://jobportal-58c65.firebaseio.com"
+  });
+
+
+  const registrationToken = req.body.registrationToken;
+
+  const payload = {
+    notification: {
+      title: "Account Deposit",
+      body: "A deposit to your savings account has just cleared."
+    }
+  };
+
+  const options = {
+    priority: "high",
+    timeToLive: 60 * 60 *24
+  };
+
+
+  admin.messaging().sendToDevice(registrationToken, payload, options)
+  .then(function(response) {
+    console.log("Successfully sent message:", response);
   })
+  .catch(function(error) {
+    console.log("Error sending message:", error);
+  });
+
+
+
 }
 
 
 exports.skills = (req, res) => {
   UserSchema.findOne({
-      _id: req.params.id
-    })
+    _id: req.params.id
+  })
     .then(data => {
       var str = data.skills.join();
       var array = str.trim().split(",");
       UserPost.find({
-          job_category: {
-            $in: array
-          }
-        })
+        job_category: {
+          $in: array
+        }
+      })
         .then(newData => {
           return res.status(200).send({
             status: true,
@@ -208,7 +277,7 @@ exports.skills = (req, res) => {
     })
     .catch(err => {
       res.status(200).send({
-        status: false, 
+        status: false,
         message: err.message
       })
     })
