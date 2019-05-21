@@ -171,18 +171,31 @@ exports.search = (req, res) => {
             $regex: "^" + jobCat,
             $options: "i"
           },
-          createdAt: {
-            $gte: new Date(startDate),
-            $lte: new Date(endDate)
-          }
+          // createdAt: {
+          //   $gte: new Date(startDate),
+          //   $lte: new Date(endDate)
+          // }
         }]
       }
     }
   ]).exec((err, data) => {
     if (err) {
-      res.json(err.message);
+      return res.status(200).send({
+        status: false,
+        message: err.message
+      })
     } else {
-      res.json(data);
+      if(data.length > 0) {
+        return res.status(200).send({
+          status: true,
+          data: data
+        })
+      } else {
+        return res.status(200).send({
+          status: false,
+          data: 'no record found'
+        })
+      }
     }
   })
 

@@ -10,7 +10,7 @@ module.exports = app => {
 
   app.put('/updatepassword/:id', User.updatePassword);
 
-  app.post('/fogotpassword', User.forgotPassword);
+  app.post('/forgotpassword', User.forgotPassword);
 
   app.get('/skills/:id', User.skills);
 

@@ -2,7 +2,7 @@ const UserSchema = require("../models/user.model");
 const UserPost = require("../models/user_post.model");
 const nodemailer = require('nodemailer');
 const admin = require("firebase-admin");
-const serviceAccount = require("../../config/jobportal-fcm.json");
+require('../../config/fcm/initialize_app');
 
 
 exports.createUser = (req, res) => {
@@ -186,39 +186,66 @@ exports.updatePassword = (req, res) => {
 }
 
 exports.forgotPassword = (req, res) => {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'youremail@gmail.com',
-      pass: 'yourpassword'
-    }
-  });
 
-  const mailOptions = {
-    from: 'youremail@gmail.com',
-    to: req.body.email,
-    subject: 'Sending Email using Node.js',
-    text: 'That was easy!'
-  };
+  UserSchema.find({
+    email: req.body.email
+  })
+    .then(data => {
+      if (data.length > 0) {
+        const transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+            user: 'usmansajjad138@gmail.com',
+            pass: 'USMANmalik4747'
+          }
+        });
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-      res.json(error.message)
-    } else {
-      console.log('Email sent: ' + info.response);
-      res.json(info.response)
-    }
-  });
+        const mailOptions = {
+          from: 'usmansajjad138@gmail.com',
+          to: req.body.email,
+          subject: 'Challan',
+          text: 'its easy'
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (err) {
+            console.log(error.message);
+            return res.status(200).send({
+              status: false,
+              message: err.message
+            })
+
+          }
+          else {
+            console.log('email sent successfully...');
+            return res.status(200).send({
+              status: true,
+              message: 'Email sent'
+            })
+          }
+        });
+      } else {
+        return res.status(200).send({
+          status: false,
+          message: 'Email not found'
+        })
+      }
+    })
+    .catch(err => {
+      return res.status(200).send({
+        status: false,
+        message: err.message
+      })
+    })
 }
 
 
 exports.sendNotification = (req, res) => {
 
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://jobportal-58c65.firebaseio.com"
-  });
+  // admin.initializeApp({
+  //   credential: admin.credential.cert(serviceAccount),
+  //   databaseURL: "https://jobportal-2d5f7.firebaseio.com"
+  // });
 
 
   const registrationToken = req.body.registrationToken;
@@ -232,17 +259,17 @@ exports.sendNotification = (req, res) => {
 
   const options = {
     priority: "high",
-    timeToLive: 60 * 60 *24
+    timeToLive: 60 * 60 * 24
   };
 
 
   admin.messaging().sendToDevice(registrationToken, payload, options)
-  .then(function(response) {
-    console.log("Successfully sent message:", response);
-  })
-  .catch(function(error) {
-    console.log("Error sending message:", error);
-  });
+    .then((response) => {
+      console.log("Successfully sent message:", response);
+    })
+    .catch((error) => {
+      console.log("Error sending message:", error);
+    });
 
 
 
