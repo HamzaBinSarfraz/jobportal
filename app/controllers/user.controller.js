@@ -6,7 +6,7 @@ require('../../config/fcm/initialize_app');
 
 
 exports.createUser = (req, res) => {
-  var newUser = new UserSchema({
+  const newUser = new UserSchema({
     username: req.body.username,
     password: req.body.password,
     email: req.body.email,
