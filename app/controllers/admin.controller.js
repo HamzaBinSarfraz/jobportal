@@ -33,8 +33,7 @@ exports.updatePost = (req, res) => {
         admin_email: req.body.admin_email,
         password: req.body.password
       }
-    },
-    { new: true }
+    }
   )
     .then(data => {
       if (!data) {
@@ -107,7 +106,7 @@ exports.login = (req, res) => {
       } else {
         return res.status(200).send({
           status: false,
-          message: "not match"
+          message: "user not found"
         })
       }
     })
