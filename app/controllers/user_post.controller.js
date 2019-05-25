@@ -152,14 +152,14 @@ exports.search = (req, res) => {
 
   const jobTitle = req.body.job_title;
   const jobCat = req.body.job_category;
-  // let startDate = req.body.start_date;
-  // let endDate = req.body.end_date;
 
+  if(!jobTitle && !jobCat) {
+    return res.status(200).json({
+      status: false, 
+      message: "null or empty not allowed"
+    })
+  }
 
-  // if (endDate == '' || startDate == '') {
-  //   endDate = Date.now();
-  //   startDate = Date.now();job_category
-  // }
   UserPost.aggregate([
     {
       $match: {
@@ -171,11 +171,7 @@ exports.search = (req, res) => {
           job_category: {
             $regex: "^" + jobCat,
             $options: "i"
-          },
-          // createdAt: {
-          //   $gte: new Date(startDate),
-          //   $lte: new Date(endDate)
-          // }
+          }
         }]
       }
     }
@@ -198,6 +194,23 @@ exports.search = (req, res) => {
         })
       }
     }
-  })
+  });
+}
 
+
+exports.searchByDate = (req, res) => {
+  UserPost.aggregate([{
+    $match: {
+        createdAt: {
+          $gte: new Date(req.body.start_date),
+          $lte: new Date(req.body.end_date)
+        }
+    }
+  }]).exec((err, data) => {
+    if(err) {
+      return res.json(err.message);
+    } else {
+      return res.json(data);
+    }
+  })
 }

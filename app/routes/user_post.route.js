@@ -8,5 +8,6 @@ module.exports = app => {
     app.delete('/userpost/:postId', UserPost.deletePost);
 
     app.post('/userpost/search', UserPost.search);
+    app.post('/userpost/searchbydate', UserPost.searchByDate);
   };
   
