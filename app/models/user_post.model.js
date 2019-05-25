@@ -9,6 +9,7 @@ var UserSchema = mongoose.Schema({
     contact_type: String,
     status: {
         type: String,
+        require: true,
         enum: ['not assigned', 'assigned', 'completed']
     }
 }, {

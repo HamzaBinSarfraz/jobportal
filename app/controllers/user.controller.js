@@ -6,49 +6,81 @@ require('../../config/fcm/initialize_app');
 
 
 exports.createUser = (req, res) => {
-  const newUser = new UserSchema({
-    username: req.body.username,
-    password: req.body.password,
-    email: req.body.email,
-    contact_no: req.body.contact_no,
-    city: req.body.city,
-    skills: req.body.skills,
-    user_image: req.file.path
-  });
-  newUser
-    .save()
-    .then(data => {
-      if (data) {
-        return res.status(200).send({
-          status: true,
-          data: data
-        });
-      } else {
+  if(typeof req.file !== 'undefined') {
+    const newUser = new UserSchema({
+      username: req.body.username,
+      password: req.body.password,
+      email: req.body.email,
+      contact_no: req.body.contact_no,
+      city: req.body.city,
+      skills: req.body.skills,
+      user_image: req.file.path,
+      registration_token: req.body.registration_token
+    });
+    newUser
+      .save()
+      .then(data => {
+        if (data) {
+          return res.status(200).send({
+            status: true,
+            data: data
+          });
+        } else {
+          return res.status(200).send({
+            status: false,
+            message: "unable to create user"
+          });
+        }
+      })
+      .catch(err => {
         return res.status(200).send({
           status: false,
-          message: "unable to create user"
+          message: err.message
         });
-      }
-    })
-    .catch(err => {
-      return res.status(200).send({
-        status: false,
-        message: err.message
-      });
+      });    
+  }  else {
+    const newUser = new UserSchema({
+      username: req.body.username,
+      password: req.body.password,
+      email: req.body.email,
+      contact_no: req.body.contact_no,
+      city: req.body.city,
+      skills: req.body.skills,
+      registration_token: req.body.registration_token
     });
+    newUser
+      .save()
+      .then(data => {
+        if (data) {
+          return res.status(200).send({
+            status: true,
+            data: data
+          });
+        } else {
+          return res.status(200).send({
+            status: false,
+            message: "unable to create user"
+          });
+        }
+      })
+      .catch(err => {
+        return res.status(200).send({
+          status: false,
+          message: err.message
+        });
+      });
+  }
 };
 
 exports.userLogin = (req, res) => {
-  UserSchema.findOne({
+  UserSchema.find({
     username: req.body.username
   }).then(data => {
-    if (data) {
+    if (data.length > 0) {
+      if (data[0].password === req.body.password) {
 
-      if (data.password.trim() === req.body.password.trim()) {
-        var str = data.skills.join();
-
-
-        var array = str.trim().split(",");
+        const str = data[0].skills.join();
+        const array = str.trim().split(",");
 
         UserPost.find({
           job_category: {
@@ -207,20 +239,22 @@ exports.forgotPassword = (req, res) => {
           text: 'its easy'
         };
 
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (err) {
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+
             console.log(error.message);
             return res.status(200).send({
               status: false,
-              message: err.message
+              message: error.message
             })
 
           }
           else {
+
             console.log('email sent successfully...');
             return res.status(200).send({
               status: true,
-              message: 'Email sent'
+              message: 'Email sent ' 
             })
           }
         });
@@ -308,4 +342,27 @@ exports.skills = (req, res) => {
         message: err.message
       })
     })
+}
+
+
+exports.updateRegistrationToken = (req, res) => {
+  UserSchema.update({
+    _id: req.params.id
+  }, {
+    $set: {
+      registration_token: req.body.registration_token
+    }
+  })
+  .then(data => {
+    return res.status(200).send({
+      status: true,
+      message: 'token updated successfully'
+    })
+  })
+  .catch(err => {
+    return res.status(200).send({
+      status: false,
+      message: err.message
+    })
+  })
 }

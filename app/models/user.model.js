@@ -4,18 +4,24 @@ var UserSchema = mongoose.Schema(
   {
     username: {
       type: String,
-      unique: true
+      unique: true,
+      trim: true
     },
-    password: String,
+    password: {
+      type: String,
+      trim: true
+    },
     email: {
       type: String,
-      require: true
+      require: true,
+      trim: true
     },
     contact_no: Number,
     city: String,
     coutry: String,
     skills: [String],
-    user_image: String
+    user_image: String,
+    registration_token: String
   },
   {
     timestamps: true

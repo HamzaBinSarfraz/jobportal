@@ -1,13 +1,14 @@
 const UserPost = require("../models/user_post.model");
 
 exports.createPost = (req, res) => {
-  var newPost = new UserPost({
+  const newPost = new UserPost({
     job_title: req.body.job_title,
     job_description: req.body.job_description,
     job_category: req.body.job_category,
     job_location: req.body.job_location,
     user_id: req.params.user_id,
-    contact_type: req.body.contact_type
+    contact_type: req.body.contact_type,
+    status: req.body.status
   });
   newPost
     .save()
@@ -151,14 +152,14 @@ exports.search = (req, res) => {
 
   const jobTitle = req.body.job_title;
   const jobCat = req.body.job_category;
-  let startDate = req.body.start_date;
-  let endDate = req.body.end_date;
+  // let startDate = req.body.start_date;
+  // let endDate = req.body.end_date;
 
 
-  if (endDate == '' || startDate == '') {
-    endDate = Date.now();
-    startDate = Date.now();
-  }
+  // if (endDate == '' || startDate == '') {
+  //   endDate = Date.now();
+  //   startDate = Date.now();job_category
+  // }
   UserPost.aggregate([
     {
       $match: {
