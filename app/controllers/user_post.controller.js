@@ -65,7 +65,7 @@ exports.findOnePost = (req, res) => {
       if (!post) {
         return res.status(200).send({
           status: false,
-          message: "post not found with id " + req.params.postId
+          message: "post not found with id " + req.params.userId
         });
       }
       res.send({
@@ -77,12 +77,12 @@ exports.findOnePost = (req, res) => {
       if (err.kind === "ObjectId") {
         return res.status(200).send({
           status: false,
-          message: "post not found with id " + req.params.postId
+          message: "post not found with id " + req.params.userId
         });
       }
       return res.status(200).send({
         status: false,
-        message: "Error retrieving Activity with id " + req.params.postId
+        message: "Error retrieving Activity with id " + req.params.userId
       });
     });
 };
