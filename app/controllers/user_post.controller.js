@@ -8,7 +8,9 @@ exports.createPost = (req, res) => {
     job_location: req.body.job_location,
     user_id: req.params.user_id,
     contact_type: req.body.contact_type,
-    status: req.body.status
+    status: req.body.status,
+    contact_detail: req.body.contact_detail,
+    budget: req.body.budget
   });
   newPost
     .save()
@@ -98,7 +100,9 @@ exports.updatePost = (req, res) => {
         job_location: req.body.job_location,
         user_id: req.params.user_id,
         contact_type: req.body.contact_type,
-        status: req.body.status
+        status: req.body.status,
+        contact_detail: req.body.contact_detail,
+        budget: req.body.budget
       }
     }, {
       new: true
