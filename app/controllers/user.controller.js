@@ -7,6 +7,8 @@ require('../../config/fcm/initialize_app');
 
 exports.createUser = (req, res) => {
   if(typeof req.file !== 'undefined') {
+    let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
+    console.log(imagePath);
     const newUser = new UserSchema({
       username: req.body.username,
       password: req.body.password,
@@ -14,7 +16,7 @@ exports.createUser = (req, res) => {
       contact_no: req.body.contact_no,
       city: req.body.city,
       skills: req.body.skills,
-      user_image: req.file.path,
+      user_image: imagePath,
       registration_token: req.body.registration_token
     });
     newUser

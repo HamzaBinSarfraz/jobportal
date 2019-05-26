@@ -31,7 +31,7 @@ exports.createPost = (req, res) => {
         message: err.message
       });
     });
-};
+};  
 
 exports.getAllPost = (req, res) => {
   UserPost.find()
@@ -196,7 +196,6 @@ exports.search = (req, res) => {
     }
   });
 }
-
 
 exports.searchByDate = (req, res) => {
   UserPost.aggregate([{

@@ -44,6 +44,10 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to job portal" });
 });
 
+const publicDir = require('path').join(__dirname,'./images');
+console.log(publicDir);
+app.use(express.static(publicDir));
+
 // import all routes at once
 require("./config/routes.config")(app);
 
