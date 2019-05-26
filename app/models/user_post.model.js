@@ -21,6 +21,6 @@ var UserSchema = mongoose.Schema({
     }
 }, {
     timestamps: true
-})
+});
 
 module.exports = mongoose.model('userpost', UserSchema);

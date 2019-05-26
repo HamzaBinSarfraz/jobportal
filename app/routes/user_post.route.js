@@ -3,7 +3,7 @@ module.exports = app => {
     // Create a new user
     app.post("/userpost", UserPost.createPost);
     app.get('/userpost', UserPost.getAllPost);
-    app.get('/userpost/:postId', UserPost.findOnePost);
+    app.get('/userpost/:userId', UserPost.findOnePost);
     app.put('/userpost/:postId', UserPost.updatePost);
     app.delete('/userpost/:postId', UserPost.deletePost);
 

@@ -11,6 +11,7 @@ exports.createUser = (req, res) => {
     imagePath = imagePath.split('/images/').join('/')
     console.log(imagePath);
     const newUser = new UserSchema({
+      name: req.body.name,
       username: req.body.username,
       password: req.body.password,
       email: req.body.email,

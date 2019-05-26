@@ -58,7 +58,9 @@ exports.getAllPost = (req, res) => {
 };
 
 exports.findOnePost = (req, res) => {
-  UserPost.findById(req.params.postId)
+  UserPost.findById({
+    user_id: req.params.userId
+  })
     .then(post => {
       if (!post) {
         return res.status(200).send({
