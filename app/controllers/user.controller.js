@@ -239,7 +239,7 @@ exports.forgotPassword = (req, res) => {
         const mailOptions = {
           from: 'usmansajjad138@gmail.com',
           to: req.body.email,
-          subject: 'Challan',
+          subject: 'Bla',
           text: 'its easy'
         };
 

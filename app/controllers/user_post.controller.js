@@ -31,7 +31,7 @@ exports.createPost = (req, res) => {
         message: err.message
       });
     });
-};  
+};
 
 exports.getAllPost = (req, res) => {
   UserPost.find()
@@ -59,8 +59,8 @@ exports.getAllPost = (req, res) => {
 
 exports.findOnePost = (req, res) => {
   UserPost.findById({
-    user_id: req.params.userId
-  })
+      user_id: req.params.userId
+    })
     .then(post => {
       if (!post) {
         return res.status(200).send({
@@ -88,9 +88,9 @@ exports.findOnePost = (req, res) => {
 };
 
 exports.updatePost = (req, res) => {
-  UserPost.update(
-    { _id: req.params.postId },
-    {
+  UserPost.update({
+      _id: req.params.postId
+    }, {
       $set: {
         job_title: req.body.job_title,
         job_description: req.body.job_description,
@@ -100,9 +100,9 @@ exports.updatePost = (req, res) => {
         contact_type: req.body.contact_type,
         status: req.body.status
       }
-    },
-    { new: true }
-  )
+    }, {
+      new: true
+    })
     .then(data => {
       if (!data) {
         return res.status(200).send({
@@ -126,8 +126,8 @@ exports.updatePost = (req, res) => {
 
 exports.deletePost = (req, res) => {
   UserPost.deleteOne({
-    _id: req.params.postId
-  })
+      _id: req.params.postId
+    })
     .then(data => {
       if (data) {
         return res.status(200).send({
@@ -156,40 +156,54 @@ exports.search = (req, res) => {
   const jobTitle = req.body.job_title;
   const jobCat = req.body.job_category;
 
-  if(!jobTitle && !jobCat) {
+  if (!jobTitle && !jobCat) {
     return res.status(200).json({
-      status: false, 
+      status: false,
       message: "null or empty not allowed"
     })
   }
 
-  UserPost.aggregate([
-    {
-      $match: {
-        $or: [{
-          job_title: {
-            $regex: "^" + jobTitle,
-            $options: "i"
-          },
-          job_category: {
-            $regex: "^" + jobCat,
-            $options: "i"
-          }
-        }]
-      }
+  UserPost.aggregate([{
+    $match: {
+      $and: [{
+        job_title: {
+          $regex: "^" + jobTitle,
+          $options: "i"
+        },
+        job_category: {
+          $regex: "^" + jobCat,
+          $options: "i"
+        }
+      }]
     }
-  ]).exec((err, data) => {
+  }]).exec((err, data) => {
     if (err) {
       return res.status(200).send({
         status: false,
         message: err.message
       })
     } else {
-      if(data.length > 0) {
-        return res.status(200).send({
-          status: true,
-          data: data
-        })
+      if (data.length > 0) {
+        // return res.status(200).send({
+        //   status: true,
+        //   data: data
+        // })
+
+        UserPost.aggregate([{
+          $match: {
+            createdAt: {
+              $gte: new Date(req.body.start_date),
+              $lte: new Date(req.body.end_date)
+            }
+          }
+        }]).exec((err, data) => {
+          if (err) {
+            return res.json(err.message);
+          } else {
+            return res.json(data);
+          }
+        });
+
       } else {
         return res.status(200).send({
           status: false,
