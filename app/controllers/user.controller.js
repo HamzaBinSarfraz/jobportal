@@ -350,6 +350,7 @@ exports.skills = (req, res) => {
 
 
 exports.updateRegistrationToken = (req, res) => {
+  console.log(' i am here ... ');
   UserSchema.update({
     _id: req.params.id
   }, {
@@ -369,4 +370,62 @@ exports.updateRegistrationToken = (req, res) => {
       message: err.message
     })
   })
+}
+
+
+exports.updateUser = (req, res) => {
+  if(req.file !== undefined) {
+    let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
+    imagePath = imagePath.split('/images/').join('/');
+    UserSchema.update({
+      _id: req.params.id
+    }, {
+      $set: {
+        name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        contact_no: req.body.contact_no,
+        city: req.body.city,
+        skills: req.body.skills,
+        user_image: imagePath
+      }
+    })
+    .then(data => {
+      return res.status(200).send({
+        status: true,
+        message:  'updated successfully'
+      })
+    })
+    .catch(err => {
+      return res.status(200).send({
+        status: false,
+        message: err.message
+      })
+    })
+  } else {
+    UserSchema.update({
+      _id: req.params.id
+    }, {
+      $set: {
+        name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        contact_no: req.body.contact_no,
+        city: req.body.city,
+        skills: req.body.skills
+      }
+    })
+    .then(data => {
+      return res.status(200).send({
+        status: true,
+        message:  'updated successfully without image'
+      })
+    })
+    .catch(err => {
+      return res.status(200).send({
+        status: false,
+        message: err.message
+      })
+    })
+  }
 }

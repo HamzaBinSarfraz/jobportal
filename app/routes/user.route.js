@@ -17,6 +17,10 @@ module.exports = app => {
 
   app.put('/user/updatetoken/:id', User.updateRegistrationToken);
 
+
+  // update user profile
+  app.put("/user/updateuser/:id", Image, User.updateUser);
+
   // app.put('user/:id', User.updatePassword);
   // app.put('user/:');
 };

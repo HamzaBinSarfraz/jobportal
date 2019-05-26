@@ -200,19 +200,19 @@ exports.search = (req, res) => {
   });
 }
 
-exports.searchByDate = (req, res) => {
-  UserPost.aggregate([{
-    $match: {
-        createdAt: {
-          $gte: new Date(req.body.start_date),
-          $lte: new Date(req.body.end_date)
-        }
-    }
-  }]).exec((err, data) => {
-    if(err) {
-      return res.json(err.message);
-    } else {
-      return res.json(data);
-    }
-  })
-}
+// exports.searchByDate = (req, res) => {
+//   UserPost.aggregate([{
+//     $match: {
+//         createdAt: {
+//           $gte: new Date(req.body.start_date),
+//           $lte: new Date(req.body.end_date)
+//         }
+//     }
+//   }]).exec((err, data) => {
+//     if(err) {
+//       return res.json(err.message);
+//     } else {
+//       return res.json(data);
+//     }
+//   })
+// }
