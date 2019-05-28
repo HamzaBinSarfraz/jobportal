@@ -1,5 +1,5 @@
 module.exports = {
   secret: "LogicPoweredSolutions",
   url:
-    "mongodb://jobportal:job123@ds237072.mlab.com:37072/jobportal"
+    "mongodb+srv://asad:123asad123@cluster0-tyffw.mongodb.net/test?retryWrites=true"
 };
