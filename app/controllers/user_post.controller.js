@@ -41,8 +41,7 @@ exports.getAllPost = (req, res) => {
       if (data) {
         return res.status(200).send({
           status: true,
-          data: data,
-          message: "user exist"
+          data: data
         });
       } else {
         return res.status(200).send({
