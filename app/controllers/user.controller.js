@@ -47,6 +47,7 @@ exports.createUser = (req, res) => {
       username: req.body.username,
       password: req.body.password,
       email: req.body.email,
+      name: req.body.name,
       contact_no: req.body.contact_no,
       city: req.body.city,
       skills: req.body.skills,
