@@ -60,7 +60,7 @@ exports.getAllPost = (req, res) => {
 };
 
 exports.findOnePost = (req, res) => {
-  UserPost.findById({
+  UserPost.find({
       user_id: req.params.userId
     })
     .then(post => {
@@ -69,11 +69,12 @@ exports.findOnePost = (req, res) => {
           status: false,
           message: "post not found with id " + req.params.userId
         });
+      } else {
+        return res.status(200).send({
+          status: true,
+          data: post
+        });
       }
-      res.send({
-        status: true,
-        data: post
-      });
     })
     .catch(err => {
       if (err.kind === "ObjectId") {
