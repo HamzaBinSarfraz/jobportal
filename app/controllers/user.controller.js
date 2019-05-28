@@ -232,13 +232,13 @@ exports.forgotPassword = (req, res) => {
         const transporter = nodemailer.createTransport({
           service: 'Gmail',
           auth: {
-            user: 'usmansajjad138@gmail.com',
-            pass: 'USMANmalik4747'
+            user: 'jobsproject.testing@gmail.com',
+            pass: 'jobsproject'
           }
         });
 
         const mailOptions = {
-          from: 'usmansajjad138@gmail.com',
+          from: 'jobsproject.testing@gmail.com',
           to: req.body.email,
           subject: 'Bla',
           text: 'its easy'
