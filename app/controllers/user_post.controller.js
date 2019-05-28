@@ -1,17 +1,8 @@
 const UserPost = require("../models/user_post.model");
 
 exports.createPost = (req, res) => {
-  const newPost = new UserPost({
-    job_title: req.body.job_title,
-    job_description: req.body.job_description,
-    job_category: req.body.job_category,
-    job_location: req.body.job_location,
-    user_id: req.params.user_id,
-    contact_type: req.body.contact_type,
-    status: req.body.status,
-    contact_detail: req.body.contact_detail,
-    budget: req.body.budget
-  });
+  console.log(req.body.user_id);
+  const newPost = new UserPost(req.body);
   newPost
     .save()
     .then(data => {
