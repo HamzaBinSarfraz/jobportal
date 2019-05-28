@@ -89,7 +89,6 @@ exports.updatePost = (req, res) => {
         job_description: req.body.job_description,
         job_category: req.body.job_category,
         job_location: req.body.job_location,
-        user_id: req.params.user_id,
         contact_type: req.body.contact_type,
         status: req.body.status,
         contact_detail: req.body.contact_detail,
