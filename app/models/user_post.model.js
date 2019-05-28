@@ -7,10 +7,7 @@ var UserSchema = mongoose.Schema({
     job_location: String, 
     budget: String,
     contact_detail: String,
-    user_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        require: true
-    }, 
+    user_id: mongoose.Schema.Types.ObjectId, 
     contact_type: {
         type: String,
         require: true,
