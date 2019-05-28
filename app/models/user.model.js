@@ -25,7 +25,10 @@ var UserSchema = mongoose.Schema(
     city: String,
     coutry: String,
     skills: [String],
-    user_image: String,
+    user_image: {
+      type: String,
+      default: null
+    },
     registration_token: String
   },
   {
