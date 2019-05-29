@@ -6,7 +6,7 @@ require('../../config/fcm/initialize_app');
 
 
 exports.createUser = (req, res) => {
-  if(typeof req.file !== 'undefined') {
+  if (typeof req.file !== 'undefined') {
     let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
     imagePath = imagePath.split('/images/').join('/')
     console.log(imagePath);
@@ -41,8 +41,8 @@ exports.createUser = (req, res) => {
           status: false,
           message: err.message
         });
-      });    
-  }  else {
+      });
+  } else {
     const newUser = new UserSchema({
       username: req.body.username,
       password: req.body.password,
@@ -221,7 +221,6 @@ exports.updatePassword = (req, res) => {
       })
   }
 }
-
 exports.forgotPassword = (req, res) => {
 
   UserSchema.find({
@@ -259,7 +258,7 @@ exports.forgotPassword = (req, res) => {
             console.log('email sent successfully...');
             return res.status(200).send({
               status: true,
-              message: 'Email sent ' 
+              message: 'Email sent '
             })
           }
         });
@@ -355,78 +354,78 @@ exports.updateRegistrationToken = (req, res) => {
   UserSchema.update({
     _id: req.params.id
   }, {
-    $set: {
-      registration_token: req.body.registration_token
-    }
-  })
-  .then(data => {
-    return res.status(200).send({
-      status: true,
-      message: 'token updated successfully'
+      $set: {
+        registration_token: req.body.registration_token
+      }
     })
-  })
-  .catch(err => {
-    return res.status(200).send({
-      status: false,
-      message: err.message
+    .then(data => {
+      return res.status(200).send({
+        status: true,
+        message: 'token updated successfully'
+      })
     })
-  })
+    .catch(err => {
+      return res.status(200).send({
+        status: false,
+        message: err.message
+      })
+    })
 }
 
 
 exports.updateUser = (req, res) => {
-  if(req.file !== undefined) {
+  if (req.file !== undefined) {
     let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
     imagePath = imagePath.split('/images/').join('/');
     UserSchema.update({
       _id: req.params.id
     }, {
-      $set: {
-        name: req.body.name,
-        username: req.body.username,
-        email: req.body.email,
-        contact_no: req.body.contact_no,
-        city: req.body.city,
-        skills: req.body.skills,
-        user_image: imagePath
-      }
-    })
-    .then(data => {
-      return res.status(200).send({
-        status: true,
-        message:  'updated successfully'
+        $set: {
+          name: req.body.name,
+          username: req.body.username,
+          email: req.body.email,
+          contact_no: req.body.contact_no,
+          city: req.body.city,
+          skills: req.body.skills,
+          user_image: imagePath
+        }
       })
-    })
-    .catch(err => {
-      return res.status(200).send({
-        status: false,
-        message: err.message
+      .then(data => {
+        return res.status(200).send({
+          status: true,
+          message: 'updated successfully'
+        })
       })
-    })
+      .catch(err => {
+        return res.status(200).send({
+          status: false,
+          message: err.message
+        })
+      })
   } else {
     UserSchema.update({
       _id: req.params.id
     }, {
-      $set: {
-        name: req.body.name,
-        username: req.body.username,
-        email: req.body.email,
-        contact_no: req.body.contact_no,
-        city: req.body.city,
-        skills: req.body.skills
-      }
-    })
-    .then(data => {
-      return res.status(200).send({
-        status: true,
-        message:  'updated successfully without image'
+        $set: {
+          name: req.body.name,
+          username: req.body.username,
+          email: req.body.email,
+          contact_no: req.body.contact_no,
+          city: req.body.city,
+          skills: req.body.skills
+        }
       })
-    })
-    .catch(err => {
-      return res.status(200).send({
-        status: false,
-        message: err.message
+      .then(data => {
+        return res.status(200).send({
+          status: true,
+          message: 'updated successfully without image'
+        })
       })
-    })
+      .catch(err => {
+        return res.status(200).send({
+          status: false,
+          message: err.message
+        })
+      })
   }
 }

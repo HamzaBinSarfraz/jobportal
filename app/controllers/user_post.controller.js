@@ -51,8 +51,8 @@ exports.getAllPost = (req, res) => {
 
 exports.findOnePost = (req, res) => {
   UserPost.find({
-      user_id: req.params.userId
-    })
+    user_id: req.params.userId
+  })
     .then(post => {
       if (!post) {
         return res.status(200).send({
@@ -82,8 +82,8 @@ exports.findOnePost = (req, res) => {
 
 exports.updatePost = (req, res) => {
   UserPost.update({
-      _id: req.params.postId
-    }, {
+    _id: req.params.postId
+  }, {
       $set: {
         job_title: req.body.job_title,
         job_description: req.body.job_description,
@@ -120,8 +120,8 @@ exports.updatePost = (req, res) => {
 
 exports.deletePost = (req, res) => {
   UserPost.deleteOne({
-      _id: req.params.postId
-    })
+    _id: req.params.postId
+  })
     .then(data => {
       if (data) {
         return res.status(200).send({
@@ -149,78 +149,161 @@ exports.search = (req, res) => {
 
   const jobTitle = req.body.job_title;
   const jobCat = req.body.job_category;
+  const startDate = req.body.start_date;
+  const endDate = req.body.end_date;
+
 
   if (!jobTitle && !jobCat) {
-    return res.status(200).json({
-      status: false,
-      message: "null or empty not allowed"
-    })
-  }
 
-  UserPost.aggregate([{
-    $match: {
-      $and: [{
-        job_title: {
-          $regex: "^" + jobTitle,
-          $options: "i"
-        },
-        job_category: {
-          $regex: "^" + jobCat,
-          $options: "i"
+    console.log('jobtitle and jobcat are null');
+
+    if (startDate === endDate) {
+      
+      UserPost.aggregate([{
+        $match: {
+          createdAt: {
+            $gte: new Date(startDate),
+            $lte: new Date(endDate)
+          }
         }
-      }]
-    }
-  }]).exec((err, data) => {
-    if (err) {
-      return res.status(200).send({
-        status: false,
-        message: err.message
-      })
+      }])
+
     } else {
-      if (data.length > 0) {
-        // return res.status(200).send({
-        //   status: true,
-        //   data: data
-        // })
 
-        UserPost.aggregate([{
-          $match: {
-            createdAt: {
-              $gte: new Date(req.body.start_date),
-              $lte: new Date(req.body.end_date)
-            }
+      UserPost.aggregate([{
+        $match: {
+          createdAt: {
+            $gte: new Date(startDate),
+            $lt: new Date(endDate)
           }
-        }]).exec((err, data) => {
-          if (err) {
-            return res.json(err.message);
-          } else {
-            return res.json(data);
-          }
-        });
+        }
+      }]).exec((err, data) => {
+        if (err) {
+          return res.status(200).json({
+            status: false,
+            message: err.message
+          });
+        } else {
+          return res.status(200).json({
+            status: true,
+            data: data
+          });
+        }
+      });
+    }
 
-      } else {
-        return res.status(200).send({
+
+  } else if (!startDate && !endDate) {
+    console.log('startdate and enddate are null');
+
+
+    UserPost.aggregate([{
+      $match: {
+        $and: [{
+          job_title: {
+            $regex: "^" + jobTitle,
+            $options: "i"
+          },
+          job_category: {
+            $regex: "^" + jobCat,
+            $options: "i"
+          }
+        }]
+      }
+    }]).exec((err, data) => {
+      if (err) {
+        return res.status(200).json({
           status: false,
-          data: 'no record found'
+          message: err.message
         })
       }
-    }
-  });
-}
+      if (data) {
+        return res.status(200).json({
+          status: true,
+          length: data.length,
+          data: data
+        })
+      }
+    })
 
-// exports.searchByDate = (req, res) => {
-//   UserPost.aggregate([{
-//     $match: {
-//         createdAt: {
-//           $gte: new Date(req.body.start_date),
-//           $lte: new Date(req.body.end_date)
-//         }
-//     }
-//   }]).exec((err, data) => {
-//     if(err) {
-//       return res.json(err.message);
-//     } else {
-//       return res.json(data);
-//     }
-//   })
-// }
+
+  } else if (!endDate) {
+    console.log('enddate is null');
+
+    UserPost.aggregate([{
+      $match: {
+        $lte: new Date(startDate)
+      }
+    }]).exec((err, data) => {
+      if(err) {
+        return res.status(200).json({
+          status: false,
+          message: err.message
+        })
+      } 
+      if(data) {
+        return res.status(200).json({
+          status: true,
+          data: data
+        })
+      }
+    })
+
+  } else {
+    UserPost.aggregate([{
+      $match: {
+        $and: [{
+          job_title: {
+            $regex: "^" + jobTitle,
+            $options: "i"
+          },
+          job_category: {
+            $regex: "^" + jobCat,
+            $options: "i"
+          }
+        }]
+      }
+    }]).exec((err, data) => {
+      if (err) {
+        return res.status(200).send({
+          status: false,
+          message: err.message
+        })
+      } else {
+        if (data.length > 0) {
+          // return res.status(200).send({
+          //   status: true,
+          //   data: data
+          // })
+
+          UserPost.aggregate([{
+            $match: {
+              createdAt: {
+                $gte: new Date(req.body.start_date),
+                $lt: new Date(req.body.end_date)
+              }
+            }
+          }]).exec((err, data) => {
+            if (err) {
+              return res.status(200).json({
+                status: false,
+                message: err.message
+              });
+            } else {
+              return res.status(200).json({
+                status: true,
+                data: data
+              });
+            }
+          });
+
+        } else {
+          return res.status(200).send({
+            status: false,
+            data: 'no record found'
+          })
+        }
+      }
+    });
+  }
+}
