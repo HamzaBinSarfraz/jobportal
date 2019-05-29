@@ -51,8 +51,8 @@ exports.getAllPost = (req, res) => {
 
 exports.findOnePost = (req, res) => {
   UserPost.find({
-    user_id: req.params.userId
-  })
+      user_id: req.params.userId
+    })
     .then(post => {
       if (!post) {
         return res.status(200).send({
@@ -82,8 +82,8 @@ exports.findOnePost = (req, res) => {
 
 exports.updatePost = (req, res) => {
   UserPost.update({
-    _id: req.params.postId
-  }, {
+      _id: req.params.postId
+    }, {
       $set: {
         job_title: req.body.job_title,
         job_description: req.body.job_description,
@@ -120,8 +120,8 @@ exports.updatePost = (req, res) => {
 
 exports.deletePost = (req, res) => {
   UserPost.deleteOne({
-    _id: req.params.postId
-  })
+      _id: req.params.postId
+    })
     .then(data => {
       if (data) {
         return res.status(200).send({
@@ -158,7 +158,7 @@ exports.search = (req, res) => {
     console.log('jobtitle and jobcat are null');
 
     if (startDate === endDate) {
-      
+
       UserPost.aggregate([{
         $match: {
           createdAt: {
@@ -235,13 +235,13 @@ exports.search = (req, res) => {
         $lte: new Date(startDate)
       }
     }]).exec((err, data) => {
-      if(err) {
+      if (err) {
         return res.status(200).json({
           status: false,
           message: err.message
         })
-      } 
-      if(data) {
+      }
+      if (data) {
         return res.status(200).json({
           status: true,
           data: data
@@ -306,4 +306,29 @@ exports.search = (req, res) => {
       }
     });
   }
+}
+
+exports.searchWithJobTitle = (req, res) => {
+  const jobTitle = req.body.job_title;
+  UserPost.aggregate([{
+    $match: {
+      job_title: {
+        $regex: "^" + jobTitle,
+        $options: "i"
+      }
+    }
+  }]).exec((err, data) => {
+    if (err) {
+      return res.status(200).json({
+        status: false,
+        message: err.message
+      });
+    }
+    if (data) {
+      return res.status(200).json({
+        status: true,
+        data: data
+      });
+    }
+  });
 }
