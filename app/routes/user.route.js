@@ -1,8 +1,9 @@
 module.exports = app => {
+
   const User = require("../controllers/user.controller");
   const Image = require('../../utility/image_upload.utility');
+
   // Create a new user
-  
   app.post("/user/signup", Image, User.createUser);
   app.post('/user/login', User.userLogin);
   app.get('/user', User.findAllUser);
@@ -21,8 +22,9 @@ module.exports = app => {
   // update user profile
   app.put("/user/updateuser/:id", Image, User.updateUser);
 
-  app.post('/user/sendnitification', User.sendNotification);
+  // app.post('/user/sendnitification', User.sendNotification);
 
   // app.put('user/:id', User.updatePassword);
   // app.put('user/:');
+
 };

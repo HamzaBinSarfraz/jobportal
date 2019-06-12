@@ -1,16 +1,42 @@
 const UserPost = require("../models/user_post.model");
+const User = require("../models/user.model");
+const admin = require("firebase-admin");
+require('../../config/fcm/initialize_app');
+
 
 exports.createPost = (req, res) => {
-  console.log(req.body.user_id);
   const newPost = new UserPost(req.body);
   newPost
     .save()
     .then(data => {
       if (data) {
-        return res.status(200).send({
-          status: true,
-          data: data
-        });
+        const userId = data.user_id;
+
+        if (userId) {
+
+          User.find({
+            _id: userId
+          })
+            .then(user => {
+
+              sendNotifications(user, data, res);
+
+            })
+            .catch(err => {
+              return res.status(200).json({
+                status: false,
+                message: err.message
+              })
+            })
+
+
+        } else {
+          return res.status(200).json({
+            status: 200,
+            message: "User not found with id " + userId
+          })
+        }
+
       } else {
         return res.status(200).send({
           status: false,
@@ -25,6 +51,41 @@ exports.createPost = (req, res) => {
       });
     });
 };
+
+
+function sendNotifications(user, data, res) {
+  console.log(user[0].registration_token);
+  const registrationToken = user[0].registration_token;
+  const payload = {
+    notification: {
+      // job_title: data.job_title,
+      // description: data.job_description,
+      // post_time: data.createdAt
+      title: "Account Deposit",
+      body: "A deposit to your savings account has just cleared."
+    }
+  };
+  const options = {
+    priority: "high",
+    timeToLive: 60 * 60 * 24
+  };
+  admin.messaging().sendToDevice(registrationToken, payload, options)
+    .then((response) => {
+      console.log("Successfully sent message:", response);
+      console.log("Error ::: ", response.results[0].error);
+      res.status(200).json({
+        status: true,
+        message: "userpost created and notification send successfully"
+      });
+    })
+    .catch((error) => {
+      console.log("Error sending message:", error);
+      res.status(200).json({
+        status: false,
+        message: err.message
+      });
+    });
+}
 
 exports.getAllPost = (req, res) => {
   UserPost.find()
@@ -51,8 +112,8 @@ exports.getAllPost = (req, res) => {
 
 exports.findOnePost = (req, res) => {
   UserPost.find({
-      user_id: req.params.userId
-    })
+    user_id: req.params.userId
+  })
     .then(post => {
       if (!post) {
         return res.status(200).send({
@@ -82,8 +143,8 @@ exports.findOnePost = (req, res) => {
 
 exports.updatePost = (req, res) => {
   UserPost.update({
-      _id: req.params.postId
-    }, {
+    _id: req.params.postId
+  }, {
       $set: {
         job_title: req.body.job_title,
         job_description: req.body.job_description,
@@ -120,8 +181,8 @@ exports.updatePost = (req, res) => {
 
 exports.deletePost = (req, res) => {
   UserPost.deleteOne({
-      _id: req.params.postId
-    })
+    _id: req.params.postId
+  })
     .then(data => {
       if (data) {
         return res.status(200).send({

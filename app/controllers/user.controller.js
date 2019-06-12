@@ -1,8 +1,7 @@
 const UserSchema = require("../models/user.model");
 const UserPost = require("../models/user_post.model");
 const nodemailer = require('nodemailer');
-const admin = require("firebase-admin");
-require('../../config/fcm/initialize_app');
+
 
 
 exports.createUser = (req, res) => {
