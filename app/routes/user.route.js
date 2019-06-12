@@ -21,6 +21,8 @@ module.exports = app => {
   // update user profile
   app.put("/user/updateuser/:id", Image, User.updateUser);
 
+  app.post('/user/sendnitification', User.sendNotification);
+
   // app.put('user/:id', User.updatePassword);
   // app.put('user/:');
 };
