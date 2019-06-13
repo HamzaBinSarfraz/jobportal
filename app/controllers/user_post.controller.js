@@ -54,22 +54,19 @@ exports.createPost = (req, res) => {
 function sendNotifications(user, data, res) {
   console.log(user[0].registration_token);
   const registrationToken = user[0].registration_token;
-  const postData = 
-    "job_description: " + data.job_description +
-    "created_at: " + data.createdAt +
-    "job_categoty: " + data.job_category;
 
-  const payload = {
+  let payload = {
     notification: {
-      title: data.job_title,
-      body: postData
+      title: 'Notification',
+      body: "job_title: " + data.job_title + ", job_description: " + data.job_description +  ", job_category: " + data.job_category + ", time_stamp: " + data.createdAt
     }
   };
-  console.log(payload);
-  console.log('______________________________');
+
   const options = {
-    priority: "high",
-    timeToLive: 60 * 60 * 24
+    "job_title": data.job_title,
+    "job_description": data.job_description,
+    "job_category": data.job_category,
+    "time_stamp": data.createdAt
   };
   admin.messaging().sendToDevice(registrationToken, payload, options)
     .then((response) => {
