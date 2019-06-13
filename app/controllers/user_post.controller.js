@@ -18,9 +18,7 @@ exports.createPost = (req, res) => {
             _id: userId
           })
             .then(user => {
-
               sendNotifications(user, data, res);
-
             })
             .catch(err => {
               return res.status(200).json({
@@ -56,15 +54,19 @@ exports.createPost = (req, res) => {
 function sendNotifications(user, data, res) {
   console.log(user[0].registration_token);
   const registrationToken = user[0].registration_token;
+  const postData = 
+    "job_description: " + data.job_description +
+    "created_at: " + data.createdAt +
+    "job_categoty: " + data.job_category;
+
   const payload = {
     notification: {
-      // job_title: data.job_title,
-      // description: data.job_description,
-      // post_time: data.createdAt
       title: data.job_title,
-      body: data.job_description
+      body: postData
     }
   };
+  console.log(payload);
+  console.log('______________________________');
   const options = {
     priority: "high",
     timeToLive: 60 * 60 * 24
