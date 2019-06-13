@@ -289,8 +289,8 @@ exports.sendNotification = (req, res) => {
 
   const payload = {
     notification: {
-      title: "Account Deposit",
-      body: "A deposit to your savings account has just cleared."
+      title: data.job_title,
+      body: data.job_description
     }
   };
 
