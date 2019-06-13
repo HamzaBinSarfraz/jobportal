@@ -61,8 +61,8 @@ function sendNotifications(user, data, res) {
       // job_title: data.job_title,
       // description: data.job_description,
       // post_time: data.createdAt
-      title: "Account Deposit",
-      body: "A deposit to your savings account has just cleared."
+      title: data.job_title,
+      body: data.job_description
     }
   };
   const options = {

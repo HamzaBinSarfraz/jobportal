@@ -277,42 +277,6 @@ exports.forgotPassword = (req, res) => {
 }
 
 
-exports.sendNotification = (req, res) => {
-
-  // admin.initializeApp({
-  //   credential: admin.credential.cert(serviceAccount),
-  //   databaseURL: "https://jobportal-2d5f7.firebaseio.com"
-  // });
-
-
-  const registrationToken = req.body.registrationToken;
-
-  const payload = {
-    notification: {
-      title: data.job_title,
-      body: data.job_description
-    }
-  };
-
-  const options = {
-    priority: "high",
-    timeToLive: 60 * 60 * 24
-  };
-
-
-  admin.messaging().sendToDevice(registrationToken, payload, options)
-    .then((response) => {
-      console.log("Successfully sent message:", response);
-    })
-    .catch((error) => {
-      console.log("Error sending message:", error);
-    });
-
-
-
-}
-
-
 exports.skills = (req, res) => {
   UserSchema.findOne({
     _id: req.params.id
