@@ -65,8 +65,8 @@ function sendNotifications(user, data, res) {
 
   const payload = {
       "notification":{
-        "title":"Portugal vs. Denmark",
-        "body":"great match!"
+        "title": data.job_title,
+        "body": data.job_description
       },
       "data" : {
         "job_title" : data.job_title,
