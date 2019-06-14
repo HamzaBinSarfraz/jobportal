@@ -55,15 +55,27 @@ function sendNotifications(user, data, res) {
   console.log(user[0].registration_token);
   const registrationToken = user[0].registration_token;
 
-  let payload = {
-    notification: {
-      title: 'Notification',
-      body: "job_title: " + data.job_title + ", job_description: " + data.job_description + ", job_category: " + data.job_category +
-        ", time_stamp: " + data.createdAt + ", post_id: " + data._id
-    }
-  };
+  // let payload = {
+  //   notification: {
+  //     title: 'Notification',
+  //     body: "job_title: " + data.job_title + ", job_description: " + data.job_description + ", job_category: " + data.job_category +
+  //       ", time_stamp: " + data.createdAt + ", post_id: " + data._id
+  //   }
+  // };
 
-  console.log(payload);
+  const payload = {
+      "notification":{
+        "title":"Portugal vs. Denmark",
+        "body":"great match!"
+      },
+      "data" : {
+        "job_title" : data.job_title,
+        "job_description" : data.job_description,
+        "job_category": data.job_category,
+        "time_stamp": data.createdAt.toString(),
+        "post_id": data._id.toString()
+      }
+  }
 
   const options = {
     "job_title": data.job_title,
@@ -71,6 +83,7 @@ function sendNotifications(user, data, res) {
     "job_category": data.job_category,
     "time_stamp": data.createdAt
   };
+  
   admin.messaging().sendToDevice(registrationToken, payload, options)
     .then((response) => {
       console.log("Successfully sent message:", response);
