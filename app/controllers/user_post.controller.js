@@ -58,9 +58,12 @@ function sendNotifications(user, data, res) {
   let payload = {
     notification: {
       title: 'Notification',
-      body: "job_title: " + data.job_title + ", job_description: " + data.job_description +  ", job_category: " + data.job_category + ", time_stamp: " + data.createdAt
+      body: "job_title: " + data.job_title + ", job_description: " + data.job_description + ", job_category: " + data.job_category +
+        ", time_stamp: " + data.createdAt + ", post_id: " + data._id
     }
   };
+
+  console.log(payload);
 
   const options = {
     "job_title": data.job_title,
