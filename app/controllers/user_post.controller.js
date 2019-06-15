@@ -18,7 +18,7 @@ exports.createPost = (req, res) => {
             users.forEach(element => {
               element.skills.forEach(skills => {
                 console.log(skills);
-                console.log(skills.includes(jobTitle.toLowerCase()));
+                console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
                 let regiatrationToken = element.registration_token;
                 sendNotifications(regiatrationToken, data, res);
               })
