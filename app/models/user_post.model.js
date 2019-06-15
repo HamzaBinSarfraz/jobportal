@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 var UserSchema = mongoose.Schema({
-    job_title: String, 
-    job_description: String, 
-    job_category: String, 
+    job_title: String,
+    job_description: String,
+    job_category: String,
     job_location: String, 
     budget: String,
     contact_detail: String,

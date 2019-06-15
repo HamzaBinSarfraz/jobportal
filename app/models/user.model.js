@@ -24,7 +24,9 @@ var UserSchema = mongoose.Schema(
     contact_no: Number,
     city: String,
     coutry: String,
-    skills: [String],
+    skills: {
+      type: Array
+    },
     user_image: {
       type: String,
       default: null

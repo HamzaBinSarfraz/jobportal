@@ -10,30 +10,49 @@ exports.createPost = (req, res) => {
     .save()
     .then(data => {
       if (data) {
-        const userId = data.user_id;
 
-        if (userId) {
-
-          User.find({
-            _id: userId
-          })
-            .then(user => {
-              sendNotifications(user, data, res);
-            })
-            .catch(err => {
-              return res.status(200).json({
-                status: false,
-                message: err.message
+        const jobTitle = data.job_title;
+        console.log(jobTitle);
+        User.find()
+          .then(users => {
+            users.forEach(element => {
+              element.skills.forEach(skills => {
+                console.log(skills);
+                console.log(skills.includes(jobTitle.toLowerCase()));
+                let regiatrationToken = element.registration_token;
+                sendNotifications(regiatrationToken, data, res);
               })
             })
-
-
-        } else {
-          return res.status(200).json({
-            status: 200,
-            message: "User not found with id " + userId
           })
-        }
+          .catch(err => {
+            return res.status(200).json({
+              status: false,
+              message: err.message
+            })
+          })
+
+        // if (userId) {
+
+        //   User.find({
+        //     _id: userId
+        //   })
+        //     .then(user => {
+        //       sendNotifications(user, data, res);
+        //     })
+        //     .catch(err => {
+        //       return res.status(200).json({
+        //         status: false,
+        //         message: err.message
+        //       })
+        //     })
+
+
+        // } else {
+        //   return res.status(200).json({
+        //     status: 200,
+        //     message: "User not found with id " + userId
+        //   })
+        // }
 
       } else {
         return res.status(200).send({
@@ -51,30 +70,22 @@ exports.createPost = (req, res) => {
 };
 
 
-function sendNotifications(user, data, res) {
-  console.log(user[0].registration_token);
-  const registrationToken = user[0].registration_token;
+function sendNotifications(registrationToken, data, res) {
 
-  // let payload = {
-  //   notification: {
-  //     title: 'Notification',
-  //     body: "job_title: " + data.job_title + ", job_description: " + data.job_description + ", job_category: " + data.job_category +
-  //       ", time_stamp: " + data.createdAt + ", post_id: " + data._id
-  //   }
-  // };
+  console.log(data);
 
   const payload = {
-      "notification":{
-        "title": data.job_title,
-        "body": data.job_description
-      },
-      "data" : {
-        "job_title" : data.job_title,
-        "job_description" : data.job_description,
-        "job_category": data.job_category,
-        "time_stamp": data.createdAt.toString(),
-        "post_id": data._id.toString()
-      }
+    "notification": {
+      "title": data.job_title,
+      "body": data.job_description
+    },
+    "data": {
+      "job_title": data.job_title,
+      "job_description": data.job_description,
+      "job_category": data.job_category,
+      "time_stamp": data.createdAt.toString(),
+      "post_id": data._id.toString()
+    }
   }
 
   const options = {
@@ -83,7 +94,7 @@ function sendNotifications(user, data, res) {
     "job_category": data.job_category,
     "time_stamp": data.createdAt
   };
-  
+
   admin.messaging().sendToDevice(registrationToken, payload, options)
     .then((response) => {
       console.log("Successfully sent message:", response);
