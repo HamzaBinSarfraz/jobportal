@@ -75,10 +75,10 @@ function sendNotifications(registrationToken, data, res) {
   console.log(data);
 
   const payload = {
-    "notification": {
-      "title": data.job_title,
-      "body": data.job_description
-    },
+    // "notification": {
+    //   "title": data.job_title,
+    //   "body": data.job_description
+    // },
     "data": {
       "job_title": data.job_title,
       "job_description": data.job_description,
