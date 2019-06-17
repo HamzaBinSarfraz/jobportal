@@ -419,3 +419,29 @@ exports.searchWithJobTitle = (req, res) => {
     }
   });
 }
+
+
+exports.matchSkills = (req, res) => {
+  UserPost.find({
+    job_category: req.body.job_category
+  })
+  .then(data => {
+    if(data.length > 0) {
+      return res.status(200).json({
+        status: true,
+        data: data
+      })
+    } else {
+      return res.status(200).json({
+        status: false,
+        message: 'no record found'
+      })
+    }
+  })
+  .catch(err => {
+    return res.status(200).json({
+      status: false,
+      message: err.message
+    })
+  })
+}

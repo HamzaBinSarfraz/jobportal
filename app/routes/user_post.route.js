@@ -9,5 +9,7 @@ module.exports = app => {
 
     app.post('/userpost/search', UserPost.search);
     app.post('/userpost/searchbyjobtitle', UserPost.searchWithJobTitle);
+
+    app.post('/userpost/skills', UserPost.matchSkills);
   };
   

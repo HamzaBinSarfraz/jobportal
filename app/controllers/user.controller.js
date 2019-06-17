@@ -393,22 +393,3 @@ exports.updateUser = (req, res) => {
       })
   }
 }
-
-
-exports.matchSkills = (req, res) => {
-  UserSchema.find({
-    skills: req.body.skills
-  })
-  .then(data => {
-    return res.status(200).send({
-      status: true,
-      message: data
-    })
-  })
-  .catch(err => {
-    return res.status(200).send({
-      status: false,
-      message: err.message
-    })
-  })
-}
