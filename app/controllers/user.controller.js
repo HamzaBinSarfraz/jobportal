@@ -240,7 +240,7 @@ exports.forgotPassword = (req, res) => {
           from: 'jobsproject.testing@gmail.com',
           to: req.body.email,
           subject: 'Bla',
-          text: 'its easy'
+          text: 'https://updatepassword.herokuapp.com/'
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
