@@ -9,7 +9,7 @@ exports.createUser = (req, res) => {
     let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
     imagePath = imagePath.split('/images/').join('/')
     console.log(imagePath);
-    
+
     const newUser = new UserSchema({
       name: req.body.name,
       username: req.body.username,
@@ -221,6 +221,33 @@ exports.updatePassword = (req, res) => {
       })
   }
 }
+
+
+exports.getUserByEmail = (req, res) => {
+  UserSchema.find({
+    email: req.body.email
+  })
+    .then(data => {
+      if (data.length > 0) {
+        return res.status(200).json({
+          status: true,
+          data: data
+        })
+      } else {
+        return res.status(200).json({
+          status: false,
+          message: "email not found"
+        })
+      }
+    })
+    .catch(err => {
+      return res.status(200).json({
+        status: false,
+        message: err.message
+      })
+    })
+}
+
 exports.forgotPassword = (req, res) => {
 
   UserSchema.find({
