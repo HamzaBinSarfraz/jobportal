@@ -12,16 +12,21 @@ exports.createPost = (req, res) => {
       if (data) {
 
         const jobTitle = data.job_title;
-        console.log(jobTitle);
+        const userId = data.user_id;
         User.find()
           .then(users => {
             users.forEach(element => {
-              element.skills.forEach(skills => {
-                console.log(skills);
-                console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
-                let regiatrationToken = element.registration_token;
-                sendNotifications(regiatrationToken, data, res);
-              })
+              if (element._id.equals(userId)) {
+                console.log('***************');
+                console.log('do not send notification');
+              } else {
+                element.skills.forEach(skills => {
+                  console.log(skills);
+                  console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
+                  let regiatrationToken = element.registration_token;
+                  sendNotifications(regiatrationToken, data, res);
+                })
+              }
             })
           })
           .catch(err => {
@@ -427,23 +432,23 @@ exports.matchSkills = (req, res) => {
     // job_category: { $in: arr }
     job_category: req.body.job_category
   })
-  .then(data => {
-    if(data.length > 0) {
-      return res.status(200).json({
-        status: true,
-        data: data
-      })
-    } else {
+    .then(data => {
+      if (data.length > 0) {
+        return res.status(200).json({
+          status: true,
+          data: data
+        })
+      } else {
+        return res.status(200).json({
+          status: false,
+          message: 'no record found'
+        })
+      }
+    })
+    .catch(err => {
       return res.status(200).json({
         status: false,
-        message: 'no record found'
+        message: err.message
       })
-    }
-  })
-  .catch(err => {
-    return res.status(200).json({
-      status: false,
-      message: err.message
     })
-  })
 }
