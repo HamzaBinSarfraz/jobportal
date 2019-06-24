@@ -21,7 +21,11 @@ var UserSchema = mongoose.Schema(
       unique: true,
       trim: true
     },
-    contact_no: Number,
+    contact_no: {
+      type: Number,
+      unique: true,
+      require: true
+    },
     city: String,
     coutry: String,
     skills: {

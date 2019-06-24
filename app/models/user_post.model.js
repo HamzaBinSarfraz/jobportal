@@ -11,7 +11,7 @@ var UserSchema = mongoose.Schema({
     contact_type: {
         type: String,
         require: true,
-        enum: ['call', 'email', 'facebook', 'messenger']
+        enum: ['call', 'email', 'chat', 'messanger']
     },
     status: {
         type: String,
