@@ -1,3 +1,5 @@
+
+
 const UserSchema = require("../models/user.model");
 const UserPost = require("../models/user_post.model");
 const nodemailer = require('nodemailer');
@@ -5,6 +7,10 @@ const nodemailer = require('nodemailer');
 
 
 exports.createUser = (req, res) => {
+  validateUserName(req, res);
+  validateEmail(req, res);
+  validatecellno(req, res);
+
   if (typeof req.file !== 'undefined') {
     let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
     imagePath = imagePath.split('/images/').join('/')
@@ -75,6 +81,7 @@ exports.createUser = (req, res) => {
         });
       });
   }
+  // }
 };
 
 exports.userLogin = (req, res) => {
@@ -169,6 +176,7 @@ exports.findAllUser = (req, res) => {
         message: err.message
       });
     });
+
 };
 
 exports.deleteUser = (req, res) => {
@@ -419,4 +427,54 @@ exports.updateUser = (req, res) => {
         })
       })
   }
+}
+
+
+function validateUserName(req, res) {
+  UserSchema.find({
+    username: req.body
+      .username
+  }).then(data => {
+    if (data.length > 0) {
+       res.send({
+        success: true,
+        message: 'User name Already Exist'
+      })
+      return;
+    }
+  }).catch(err=>{
+    console.log(err);
+  })
+}
+
+function validateEmail(req, res) {
+  UserSchema.find({ email: req.body.email }).then(data => {
+    if (data.length > 0) {
+       res.send({
+        success: true,
+        message: 'Email  Already Exist'
+        
+      })
+      return;
+    }
+  }).catch(err=>{
+    console.log(err);
+})
+}
+function validatecellno(req, res) {
+  UserSchema.find({ contact_no: req.body.contact_no }).then(data => {
+    if (data.length > 0) {
+       res.send({
+        success: true,
+        message: 'Contact Number Already Exist'
+      })
+      return;
+    }
+  }).catch(err=>{
+    console.log(err);
+    
+    // res.send({
+    //   message:err.message
+    // })
+})
 }
