@@ -2,10 +2,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 var cors = require("cors");
 const morgan = require('morgan');
-
+connections=[];
 // create express app npm
 const app = express();
-
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 app.use(cors());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -44,6 +45,9 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to job portal" });
 });
 
+
+
+
 const publicDir = require('path').join(__dirname,'./images');
 console.log(publicDir);
 app.use(express.static(publicDir));
@@ -53,8 +57,12 @@ require("./config/routes.config")(app);
 
 //require('.//app/routes/custom_clearance_routes')(app)
 // listen for requests
-var port = process.env.PORT || 7000;
+var port = process.env.PORT || 5000;
 app.listen(port, "0.0.0.0", () => {
   console.log("Server is listening on port " + port);
 });
 
+
+io.sockets.on('connection', function (socket) {
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>connected')
+})

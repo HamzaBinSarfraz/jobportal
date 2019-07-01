@@ -7,10 +7,49 @@ const nodemailer = require('nodemailer');
 
 
 exports.createUser = (req, res) => {
-  validateUserName(req, res);
-  validateEmail(req, res);
-  validatecellno(req, res);
+  validateUserName(req, res, function (result) {
+    console.log('...................', result);
 
+    if (result == 1) {
+      return res.send({
+        success: false,
+        message: 'User Name Already Exist'
+      })
+    }
+    else {
+      svalidateEmail(req, res, function (result1) {
+        if (result1 == 1) {
+          return res.send({
+            success: false,
+            message: 'Email Already Exist'
+          })
+        }
+        else {
+          validatecellno(req, res, function (result2) {
+            if (result2 == 1) {
+              return res.send({
+                success: false,
+                message: 'Contact Number  Already Exist'
+              })
+            }
+            else {
+              CreateUserData(req,res);
+            }
+          })
+        }
+      })
+
+    }
+
+  })
+  // validateUserName(req, res);
+  // validateEmail(req, res);
+  // validatecellno(req, res);
+
+
+};
+
+function CreateUserData(req,res) {
   if (typeof req.file !== 'undefined') {
     let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
     imagePath = imagePath.split('/images/').join('/')
@@ -81,8 +120,8 @@ exports.createUser = (req, res) => {
         });
       });
   }
-  // }
-};
+ 
+}
 
 exports.userLogin = (req, res) => {
   UserSchema.find({
@@ -430,51 +469,46 @@ exports.updateUser = (req, res) => {
 }
 
 
-function validateUserName(req, res) {
+function validateUserName(req, res, callback) {
   UserSchema.find({
     username: req.body
       .username
   }).then(data => {
     if (data.length > 0) {
-       res.send({
-        success: true,
-        message: 'User name Already Exist'
-      })
-      return;
+      callback(1)
     }
-  }).catch(err=>{
+    else {
+      callback(0)
+    }
+  }).catch(err => {
     console.log(err);
   })
 }
 
-function validateEmail(req, res) {
+function svalidateEmail(req, res, callback) {
   UserSchema.find({ email: req.body.email }).then(data => {
     if (data.length > 0) {
-       res.send({
-        success: true,
-        message: 'Email  Already Exist'
-        
-      })
-      return;
+      callback(1)
     }
-  }).catch(err=>{
+    else {
+      callback(0)
+
+    }
+  }).catch(err => {
     console.log(err);
-})
+  })
 }
-function validatecellno(req, res) {
+function validatecellno(req, res, callback) {
   UserSchema.find({ contact_no: req.body.contact_no }).then(data => {
+
     if (data.length > 0) {
-       res.send({
-        success: true,
-        message: 'Contact Number Already Exist'
-      })
-      return;
+      callback(1)
     }
-  }).catch(err=>{
+    else {
+      callback(0)
+    }
+  }).catch(err => {
     console.log(err);
-    
-    // res.send({
-    //   message:err.message
-    // })
-})
+
+  })
 }
