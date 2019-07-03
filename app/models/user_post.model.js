@@ -16,7 +16,7 @@ var UserSchema = mongoose.Schema({
     status: {
         type: String,
         require: true,
-        enum: ['not assigned', 'assigned', 'completed']
+        // enum: ['not assigned', 'assigned', 'completed']
     }
 }, {
     timestamps: true

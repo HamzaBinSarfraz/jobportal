@@ -11,5 +11,7 @@ module.exports = app => {
     app.post('/userpost/searchbyjobtitle', UserPost.searchWithJobTitle);
 
     app.post('/userpost/skills', UserPost.matchSkills);
+
+    app.delete('/clearpost',UserPost.delete)
   };
   

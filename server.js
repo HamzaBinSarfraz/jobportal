@@ -1,3 +1,4 @@
+
 const express = require("express");
 const bodyParser = require("body-parser");
 var cors = require("cors");
@@ -58,11 +59,14 @@ require("./config/routes.config")(app);
 //require('.//app/routes/custom_clearance_routes')(app)
 // listen for requests
 var port = process.env.PORT || 5000;
-app.listen(port, "0.0.0.0", () => {
+server.listen(port, "0.0.0.0", () => {
   console.log("Server is listening on port " + port);
 });
 
 
 io.sockets.on('connection', function (socket) {
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>connected')
+  // console.log(socket);
+  
+  connections.push(socket);
+  console.log('connected: %s socket connected',connections.length)
 })

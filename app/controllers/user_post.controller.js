@@ -5,6 +5,8 @@ require('../../config/fcm/initialize_app');
 
 
 exports.createPost = (req, res) => {
+  
+  
   const newPost = new UserPost(req.body);
   newPost
     .save()
@@ -451,4 +453,14 @@ exports.matchSkills = (req, res) => {
         message: err.message
       })
     })
+}
+
+
+exports.delete = (req, res) => {
+  UserPost.remove().then(data => {
+    res.send({
+      success: true,
+      message: 'Deleted All Document'
+    })
+  })
 }
