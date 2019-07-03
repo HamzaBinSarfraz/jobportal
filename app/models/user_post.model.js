@@ -18,7 +18,7 @@ var UserSchema = mongoose.Schema({
         require: true,
         enum: ['not assigned', 'assigned', 'completed']
     },
-    post_completed:String,
+    job_completed:String,
 }, {
     timestamps: true
 });
