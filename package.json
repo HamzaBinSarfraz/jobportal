@@ -19,9 +19,12 @@
   "dependencies": {
     "automapper": "^1.0.0",
     "body-parser": "^1.18.3",
+    "connect-multiparty": "^2.2.0",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "express": "^4.16.4",
     "firebase-admin": "^7.3.0",
+    "fs-extra": "^8.1.0",
     "http": "0.0.0",
     "moment": "^2.24.0",
     "mongoose": "^5.4.1",

@@ -17,5 +17,5 @@ module.exports = app => {
 app.post('/subadmin/login', subadmin.subadminLogin);
 
 
-     app.delete('/all',subadmin.delete)
+    //  app.delete('/all',subadmin.delete)
   };

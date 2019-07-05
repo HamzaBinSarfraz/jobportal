@@ -1,11 +1,8 @@
 const SubAdmin = require("../models/subadmin.model");
 
-
-
 exports.createSubadmin = (req, res) => {
   validateUserName(req, res, function (result) {
     console.log('...................', result);
-
     if (result == 1) {
       return res.send({
         success: false,
@@ -34,11 +31,8 @@ exports.createSubadmin = (req, res) => {
           })
         }
       })
-
     }
-
   })
-
 }
 
 function createSubadmin(req, res) {
@@ -63,7 +57,6 @@ function createSubadmin(req, res) {
       });
     });
 }
-
 
 exports.findSubadmin = (req, res) => {
   SubAdmin.find()
@@ -217,11 +210,11 @@ function validatecellno(req, res, callback) {
 
 
 
-exports.delete = (req, res) => {
-  SubAdmin.remove().then(data => {
-    res.send({
-      success: true,
-      message: 'Deleted All Document'
-    })
-  })
-}
+// exports.delete = (req, res) => {
+//   SubAdmin.remove().then(data => {
+//     res.send({
+//       success: true,
+//       message: 'Deleted All Document'
+//     })
+//   })
+// }
