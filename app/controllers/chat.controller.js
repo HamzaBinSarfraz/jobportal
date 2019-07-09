@@ -1,7 +1,12 @@
 
-const ChatSchema = require('../models/chat.model')
+const ChatSchema = require('../models/chat.model');
+const postSchama = require('../models/user_post.model')
 
 exports.sendChatMessages = (req, res) => {
+    console.log('............');
+
+    console.log(req.body.postid);
+
     if (typeof req.file !== 'undefined') {
         let type = 'file'
         console.log('yes m here');
@@ -10,8 +15,9 @@ exports.sendChatMessages = (req, res) => {
             sender: req.body.sender,
             receiver: req.body.receiver,
             room: req.body.room,
-            receiverid: req.body.receiverid, 
-            senderid: req.body.senderid, 
+            receiverid: req.body.receiverid,
+            senderid: req.body.senderid,
+            postid: req.body.postid,
             type: type,
             message: name
         }
@@ -55,4 +61,46 @@ exports.getChatByRoom = (req, res) => {
         })
     })
 
+}
+
+exports.getConversation = (req, res) => {
+    let id = req.params.id
+    ChatSchema.find({
+        $or: [
+            { receiverid: id },
+            { senderid: id }
+        ]
+    }).distinct("postid").then(data => {
+        if (data.length > 0) {
+            let arr = data
+            postSchama.find({
+                _id: {
+                    $in: arr
+                }
+            }).then(data1 => {
+          res.send({
+            success:true,
+            data:data1  
+          })
+            }).catch(err=>{
+                res.send({
+                    success:false,
+                    message:err.message
+                })
+            })
+        }
+        else {
+            res.send({
+                success: true,
+                data: [],
+                message: 'No post Available for this user'
+
+            })
+        }
+    }).catch(err=>{
+        res.send({
+            success:false,
+            message:err.message
+        })
+})
 }
