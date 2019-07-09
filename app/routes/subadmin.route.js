@@ -8,6 +8,9 @@ module.exports = app => {
   app.get('/subadmin', subadmin.findSubadmin);
 
   // update subadmin by subadmin id
+  app.get('/subadmin/:id', subadmin.getOneSubadmin);
+
+  // update subadmin by subadmin id
   app.put('/subadmin/:id', subadmin.updateSubadmin);
 
   // delete subadmin by subadmin id

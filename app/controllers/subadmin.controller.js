@@ -73,7 +73,29 @@ exports.findSubadmin = (req, res) => {
       });
     });
 }
+exports.getOneSubadmin=(req,res)=>{
+  SubAdmin.findById(req.params.id).then(data=>{
+    if(!data){
+      res.send({
+        success:true,
+        message:'No SubAdmin Found'
+      })
+    }
+    else{
+      res.send({
+        success:true,
+        data:data
+      })
+    }
+  }).catch(err=> {
+    res.status(200).send({
+      status: false,
+      message: err.message
+    });
+  });
 
+
+}
 exports.updateSubadmin = (req, res) => {
   SubAdmin.findByIdAndUpdate(req.params.id, req.body, {
     new: true

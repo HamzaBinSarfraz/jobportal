@@ -12,5 +12,6 @@ module.exports = app => {
 
 // for getting chat conversation list.
 app.get("/conversation/:id",Chat.getConversation)
-  };
+  
+};
   
