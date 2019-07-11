@@ -1,12 +1,10 @@
 
 const ChatSchema = require('../models/chat.model');
 const postSchama = require('../models/user_post.model')
-
+const userSchema = require("../models/user.model")
 exports.sendChatMessages = (req, res) => {
     console.log('............');
-
     console.log(req.body.postid);
-
     if (typeof req.file !== 'undefined') {
         let type = 'file'
         console.log('yes m here');
@@ -21,7 +19,11 @@ exports.sendChatMessages = (req, res) => {
             type: type,
             message: name
         }
+
+        console.log(msg);
+
         const chat = new ChatSchema(msg);
+
         chat.save().then(data => {
             global.io.emit('send_message', msg);
             res.end()
@@ -78,14 +80,14 @@ exports.getConversation = (req, res) => {
                     $in: arr
                 }
             }).then(data1 => {
-          res.send({
-            success:true,
-            data:data1  
-          })
-            }).catch(err=>{
                 res.send({
-                    success:false,
-                    message:err.message
+                    success: true,
+                    data: data1
+                })
+            }).catch(err => {
+                res.send({
+                    success: false,
+                    message: err.message
                 })
             })
         }
@@ -97,10 +99,53 @@ exports.getConversation = (req, res) => {
 
             })
         }
-    }).catch(err=>{
+    }).catch(err => {
         res.send({
-            success:false,
-            message:err.message
+            success: false,
+            message: err.message
         })
-})
+    })
+}
+
+exports.getSpecificChat = (req, res) => {
+    ChatSchema.find({
+        $and: [
+            { postid: req.params.postid }
+        ]
+    }).distinct("room").then(data => {
+        if (data.length > 0) {
+            let newarr = []
+            data.forEach(element => {
+                var parts = element.split('-');
+                let newstr = parts[1]
+                newarr.push(newstr)
+            })
+            userSchema.find({
+                _id: {
+                    $in: newarr
+                }
+            }).then(result => {
+                res.send({
+                    success: true,
+                    data: result
+                })
+            }).catch(err => {
+                res.send({
+                    success: false,
+                    message: err.message
+                })
+            })
+        }
+        else {
+            res.send({
+                success: true,
+                message: "No User Chat on this Post yet"
+            })
+        }
+    }).catch(err => {
+        res.send({
+            success: false,
+            message: err.message
+        })
+    })
 }

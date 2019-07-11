@@ -12,7 +12,7 @@ var ChatSchema = mongoose.Schema(
     },
     receiverid: mongoose.Schema.Types.ObjectId, 
     senderid: mongoose.Schema.Types.ObjectId,
-    postid: mongoose.Schema.Types.ObjectId,  
+    postid:mongoose.Schema.Types.ObjectId, 
     room:{
         type:String,
         required:true

@@ -12,6 +12,8 @@ module.exports = app => {
 
 // for getting chat conversation list.
 app.get("/conversation/:id",Chat.getConversation)
+
+app.get("/getSpecificChat/:postid",Chat.getSpecificChat)
   
 };
   
