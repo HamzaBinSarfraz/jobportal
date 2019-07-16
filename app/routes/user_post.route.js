@@ -13,5 +13,8 @@ module.exports = app => {
     app.post('/userpost/skills', UserPost.matchSkills);
 
     app.delete('/clearpost',UserPost.delete)
+
+    //  post created by login subadmin
+    app.get('/userpostbyadmin/:adminid', UserPost.findpostbyAdmin);
   };
   

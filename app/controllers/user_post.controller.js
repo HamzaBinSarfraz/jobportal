@@ -2,9 +2,10 @@ const UserPost = require("../models/user_post.model");
 const User = require("../models/user.model");
 const admin = require("firebase-admin");
 require('../../config/fcm/initialize_app');
+const mongoose = require('mongoose');
 
 exports.createPost = (req, res) => {
-      const newPost = new UserPost(req.body);
+  const newPost = new UserPost(req.body);
   newPost
     .save()
     .then(data => {
@@ -169,6 +170,45 @@ exports.findOnePost = (req, res) => {
         message: "Error retrieving Activity with id " + req.params.userId
       });
     });
+};
+
+exports.findpostbyAdmin = (req, res) => {
+  console.log();
+  
+  UserPost.aggregate([
+    {
+      $match: {
+        $and: [
+          {
+            user_id:mongoose.Types.ObjectId(req.params.adminid)
+          },
+          { subadmin: true },
+
+        ]
+      }
+    },
+    {
+      $lookup: {
+        from: "subadmins",
+        localField: "user_id",
+        foreignField: "_id",
+        as: "Subadmin"
+      }
+    }
+  ]).exec(function (err, result) {
+    if (result) {
+      return res.status(200).send({
+        success: true,
+        data: result
+      });
+    }
+    if (err) {
+      res.status(200).send({
+        success: false,
+        message: err.message
+      });
+    }
+  });
 };
 
 exports.updatePost = (req, res) => {
