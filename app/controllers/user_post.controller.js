@@ -3,7 +3,7 @@ const User = require("../models/user.model");
 const admin = require("firebase-admin");
 require('../../config/fcm/initialize_app');
 const mongoose = require('mongoose');
-
+const AdminPost= require('../models/subadmin_post.model')
 exports.createPost = (req, res) => {
   const newPost = new UserPost(req.body);
   newPost
@@ -73,7 +73,21 @@ exports.createPost = (req, res) => {
       });
     });
 };
+exports.createAdminPost=(req,res)=>{
+  const adminPost= new AdminPost(req.body)
+  adminPost.save().then(data=>{
+    res.send({
+      success:true,
+      data:data
+    })
+  }).catch(err=>{
+    res.send({
+      success:false,
+      message:err.message
+    })
+  })
 
+}
 
 function sendNotifications(registrationToken, data, res) {
 
@@ -173,9 +187,7 @@ exports.findOnePost = (req, res) => {
 };
 
 exports.findpostbyAdmin = (req, res) => {
-  console.log();
-  
-  UserPost.aggregate([
+      AdminPost.aggregate([
     {
       $match: {
         $and: [
@@ -211,6 +223,37 @@ exports.findpostbyAdmin = (req, res) => {
   });
 };
 
+exports.ListofNewPost = (req, res) => {
+  AdminPost.aggregate([
+{
+  $match: {
+               subadmin: true 
+  
+  }
+},
+{
+  $lookup: {
+    from: "subadmins",
+    localField: "user_id",
+    foreignField: "_id",
+    as: "Subadmin"
+  }
+}
+]).exec(function (err, result) {
+if (result) {
+  return res.status(200).send({
+    success: true,
+    data: result
+  });
+}
+if (err) {
+  res.status(200).send({
+    success: false,
+    message: err.message
+  });
+}
+});
+};
 exports.updatePost = (req, res) => {
   UserPost.update({
     _id: req.params.postId

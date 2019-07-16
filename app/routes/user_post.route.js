@@ -14,7 +14,13 @@ module.exports = app => {
 
     app.delete('/clearpost',UserPost.delete)
 
-    //  post created by login subadmin
+    // Creating SubAdminPost
+app.post("/adminpost", UserPost.createAdminPost);
+
+    // Get  post created by login subadmin
     app.get('/userpostbyadmin/:adminid', UserPost.findpostbyAdmin);
+
+    // List of all newely created posts/job with post/job all details along with user details.
+     app.get('/newpostlist',UserPost.ListofNewPost)
   };
   
