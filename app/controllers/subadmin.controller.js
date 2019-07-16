@@ -158,14 +158,15 @@ exports.subadminLogin = (req, res) => {
   SubAdmin.findOne(
     {
       $or: [{
-        email: req.body.email
+        email: req.body.login
       }, {
-        username: req.body.username
+        username: req.body.login
       }]
 
     }
   )
     .then(data => {
+      if(data) {
       if (data.password === req.body.password) {
         return res.status(200).send({
           status: true,
@@ -174,9 +175,16 @@ exports.subadminLogin = (req, res) => {
       } else {
         return res.status(200).send({
           status: false,
-          message: "Subadmin not found"
+          message: "Password Not Match"
         })
       }
+    }
+    else {
+      return res.status(200).send({
+        status: false,
+        message: "Subadmin not found"
+      })
+    }
     })
     .catch(err => {
       res.status(200).send({
