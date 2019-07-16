@@ -8,8 +8,6 @@ const nodemailer = require('nodemailer');
 
 exports.createUser = (req, res) => {
   validateUserName(req, res, function (result) {
-    console.log('...................', result);
-
     if (result == 1) {
       return res.send({
         success: false,
@@ -42,20 +40,19 @@ exports.createUser = (req, res) => {
     }
 
   })
-  // validateUserName(req, res);
-  // validateEmail(req, res);
-  // validatecellno(req, res);
-
-
 };
 
 function CreateUserData(req,res) {
+  console.log('.........');
+  
+  console.log(req.body);
+  
   if (typeof req.file !== 'undefined') {
     let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
     imagePath = imagePath.split('/images/').join('/')
     console.log(imagePath);
 
-    const newUser = new UserSchema({
+    const newUser = new UserSchema( {
       name: req.body.name,
       username: req.body.username,
       password: req.body.password,
@@ -64,7 +61,9 @@ function CreateUserData(req,res) {
       city: req.body.city,
       skills: req.body.skills,
       user_image: imagePath,
-      registration_token: req.body.registration_token
+      registration_token: req.body.registration_token,
+      subadmin:req.body.subadmin,
+      subadmin_id:req.body.subadmin_id
     });
     newUser
       .save()
@@ -96,7 +95,9 @@ function CreateUserData(req,res) {
       contact_no: req.body.contact_no,
       city: req.body.city,
       skills: req.body.skills,
-      registration_token: req.body.registration_token
+      registration_token: req.body.registration_token,
+      subadmin:req.body.subadmin,
+      subadmin_id:req.body.subadmin_id
     });
     newUser
       .save()

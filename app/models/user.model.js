@@ -35,6 +35,11 @@ var UserSchema = mongoose.Schema(
       type: String,
       default: null
     },
+    subadmin: {
+      type: Boolean,
+      default: false
+    },
+    subadmin_id: mongoose.Schema.Types.ObjectId, 
     registration_token: String
   },
   {

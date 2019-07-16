@@ -3,11 +3,8 @@ const User = require("../models/user.model");
 const admin = require("firebase-admin");
 require('../../config/fcm/initialize_app');
 
-
 exports.createPost = (req, res) => {
-  
-  
-  const newPost = new UserPost(req.body);
+      const newPost = new UserPost(req.body);
   newPost
     .save()
     .then(data => {

@@ -18,6 +18,10 @@ var UserSchema = mongoose.Schema({
         require: true,
         enum: ['not assigned', 'assigned', 'completed']
     },
+    subadmin: {
+        type: Boolean,
+        default: false
+      },
     job_completed:String,
 }, {
     timestamps: true
