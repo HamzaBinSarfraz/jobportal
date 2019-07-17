@@ -568,10 +568,17 @@ exports.updatePostStatus = (req, res) => {
          PostCreation(req, res, obj);
       }
       else {
-        res.send({
-          success: true,
-          message: 'Unable to update the Staus of Post'
-        })
+        AdminPost.updateOne({
+          _id: req.params.id
+        }, {
+            $set: { poststatus: req.body.status }
+          }, { new: true }).then(data=>{
+            res.send({
+              success:true,
+              message:'Status Updated'
+            })
+          })
+        
       }
     }).catch(err => {
       res.send({
