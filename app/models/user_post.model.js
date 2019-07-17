@@ -23,6 +23,10 @@ var UserSchema = mongoose.Schema({
         default: false
       },
     job_completed:String,
+    // post_status:{
+    //     type: String,
+    //     default: null
+    //   },
 }, {
     timestamps: true
 });

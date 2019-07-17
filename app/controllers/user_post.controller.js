@@ -3,9 +3,14 @@ const User = require("../models/user.model");
 const admin = require("firebase-admin");
 require('../../config/fcm/initialize_app');
 const mongoose = require('mongoose');
-const AdminPost= require('../models/subadmin_post.model')
+const AdminPost = require('../models/subadmin_post.model')
 exports.createPost = (req, res) => {
-  const newPost = new UserPost(req.body);
+  let obj = req.body
+  PostCreation(req, res, obj)
+};
+
+function PostCreation(req, res, obj) {
+  const newPost = new UserPost(obj);
   newPost
     .save()
     .then(data => {
@@ -35,30 +40,6 @@ exports.createPost = (req, res) => {
               message: err.message
             })
           })
-
-        // if (userId) {
-
-        //   User.find({
-        //     _id: userId
-        //   })
-        //     .then(user => {
-        //       sendNotifications(user, data, res);
-        //     })
-        //     .catch(err => {
-        //       return res.status(200).json({
-        //         status: false,
-        //         message: err.message
-        //       })
-        //     })
-
-
-        // } else {
-        //   return res.status(200).json({
-        //     status: 200,
-        //     message: "User not found with id " + userId
-        //   })
-        // }
-
       } else {
         return res.status(200).send({
           status: false,
@@ -72,18 +53,21 @@ exports.createPost = (req, res) => {
         message: err.message
       });
     });
-};
-exports.createAdminPost=(req,res)=>{
-  const adminPost= new AdminPost(req.body)
-  adminPost.save().then(data=>{
+}
+
+
+
+exports.createAdminPost = (req, res) => {
+  const adminPost = new AdminPost(req.body)
+  adminPost.save().then(data => {
     res.send({
-      success:true,
-      data:data
+      success: true,
+      data: data
     })
-  }).catch(err=>{
+  }).catch(err => {
     res.send({
-      success:false,
-      message:err.message
+      success: false,
+      message: err.message
     })
   })
 
@@ -187,12 +171,12 @@ exports.findOnePost = (req, res) => {
 };
 
 exports.findpostbyAdmin = (req, res) => {
-      AdminPost.aggregate([
+  AdminPost.aggregate([
     {
       $match: {
         $and: [
           {
-            user_id:mongoose.Types.ObjectId(req.params.adminid)
+            user_id: mongoose.Types.ObjectId(req.params.adminid)
           },
           { subadmin: true },
 
@@ -225,34 +209,34 @@ exports.findpostbyAdmin = (req, res) => {
 
 exports.ListofNewPost = (req, res) => {
   AdminPost.aggregate([
-{
-  $match: {
-               subadmin: true 
-  
-  }
-},
-{
-  $lookup: {
-    from: "subadmins",
-    localField: "user_id",
-    foreignField: "_id",
-    as: "Subadmin"
-  }
-}
-]).exec(function (err, result) {
-if (result) {
-  return res.status(200).send({
-    success: true,
-    data: result
+    {
+      $match: {
+        subadmin: true
+
+      }
+    },
+    {
+      $lookup: {
+        from: "subadmins",
+        localField: "user_id",
+        foreignField: "_id",
+        as: "Subadmin"
+      }
+    }
+  ]).exec(function (err, result) {
+    if (result) {
+      return res.status(200).send({
+        success: true,
+        data: result
+      });
+    }
+    if (err) {
+      res.status(200).send({
+        success: false,
+        message: err.message
+      });
+    }
   });
-}
-if (err) {
-  res.status(200).send({
-    success: false,
-    message: err.message
-  });
-}
-});
 };
 exports.updatePost = (req, res) => {
   UserPost.update({
@@ -544,3 +528,56 @@ exports.delete = (req, res) => {
     })
   })
 }
+
+
+exports.updatePostStatus = (req, res) => {
+  let postdata = {}
+  if (req.body.status == 'Approved') {
+    AdminPost.findById(req.params.id).then(result => {
+      postdata = result;
+    })
+    statuscheck = true
+  }
+  else {
+    statuscheck = false
+  }
+  AdminPost.updateOne({
+    _id: req.params.id
+  }, {
+      $set: { poststatus: req.body.status }
+    }, { new: true }).then(data => {
+      if (data && statuscheck) {
+       
+        // console.log('............');
+        let obj={
+          subadmin:postdata.subadmin,
+          poststatus:postdata.poststatus,
+          job_title:postdata.job_title,
+          job_description:postdata.job_description,
+          job_category:postdata.job_category,
+          job_location:postdata.job_location,
+          job_location:postdata.job_location,
+          contact_type:postdata.contact_type,
+          budget:postdata.budget,
+          job_completed:postdata.job_completed,
+          user_id:postdata.user_id,
+          contact_detail:postdata.contact_detail,
+          status:postdata.status
+        }
+        // console.log(postdata);
+         PostCreation(req, res, obj);
+      }
+      else {
+        res.send({
+          success: true,
+          message: 'Unable to update the Staus of Post'
+        })
+      }
+    }).catch(err => {
+      res.send({
+        success: false,
+        message: err.message
+      })
+    })
+}
+

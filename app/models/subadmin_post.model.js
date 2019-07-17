@@ -22,6 +22,10 @@ var subAdminSchema = mongoose.Schema({
         type: Boolean,
         default: false
       },
+      poststatus: {
+        type: String,
+        default: null
+      },
     job_completed:String,
 }, {
     timestamps: true
