@@ -98,7 +98,7 @@ exports.login = (req, res) => {
     }
   )
     .then(data => {
-      if (data.password === req.body.password) {
+      if (data.password == req.body.password) {
         return res.status(200).send({
           status: true,
           data: data
