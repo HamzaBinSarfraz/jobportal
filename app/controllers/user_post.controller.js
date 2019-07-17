@@ -581,3 +581,29 @@ exports.updatePostStatus = (req, res) => {
     })
 }
 
+exports.fetchpostbystatus=(req,res)=>{
+  let status=req.params.poststatus
+ 
+  AdminPost.find({
+    poststatus:status
+  }).then(data=>{
+    if(data) {
+      res.send({
+        success:true,
+        data:data
+
+      })
+    }
+    else {
+      res.send({
+        success:true,
+        message:'No Post Found'
+      })
+    }
+  }).catch(err=>{
+    res.send({
+      success:false,
+      message:err.message
+    })
+  })
+}

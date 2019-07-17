@@ -27,4 +27,8 @@ module.exports = app => {
 
   // update the status of subadmin post
   app.post('/poststatus/:id',UserPost.updatePostStatus)
+
+  /*  fetching the post on basis of Post Status */
+
+  app.get('/fetchpostbystatus/:poststatus',UserPost.fetchpostbystatus)
 };
