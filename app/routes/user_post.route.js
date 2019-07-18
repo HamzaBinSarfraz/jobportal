@@ -4,6 +4,8 @@ module.exports = app => {
   app.post("/userpost", UserPost.createPost);
   app.get('/userpost', UserPost.getAllPost);
   app.get('/userpost/:userId', UserPost.findOnePost);
+  app.get('/userpostbyid/:postId', UserPost.getPostByPostId);
+
   app.put('/userpost/:postId', UserPost.updatePost);
   app.delete('/userpost/:postId', UserPost.deletePost);
 

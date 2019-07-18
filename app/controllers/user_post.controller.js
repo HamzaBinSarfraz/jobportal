@@ -170,6 +170,40 @@ exports.findOnePost = (req, res) => {
     });
 };
 
+exports.getPostByPostId = (req, res) => {
+  UserPost.find({
+    _id: req.params.postId
+  })
+    .then(post => {
+      if (!post) {
+        return res.status(200).send({
+          status: false,
+          message: "post not found with id " + req.params.userId
+        });
+      } else {
+        return res.status(200).send({
+          status: true,
+          data: post
+        });
+      }
+    })
+    .catch(err => {
+      if (err.kind === "ObjectId") {
+        return res.status(200).send({
+          status: false,
+          message: "post not found with id " + req.params.userId
+        });
+      }
+      return res.status(200).send({
+        status: false,
+        message: "Error retrieving Activity with id " + req.params.userId
+      });
+    });
+};
+
+
+
+
 exports.findpostbyAdmin = (req, res) => {
   AdminPost.aggregate([
     {
