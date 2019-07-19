@@ -247,6 +247,8 @@ exports.getPostByPostId = (req, res) => {
 
 
 exports.findpostbyAdmin = (req, res) => {
+  console.log(req.params.adminid);
+  
   UserPost.aggregate([
     {
       $match: {
@@ -265,6 +267,14 @@ exports.findpostbyAdmin = (req, res) => {
         localField: "user_id",
         foreignField: "_id",
         as: "user"
+      }
+    },
+    {
+      $lookup: {
+        from: "subadmins",
+        localField: "subadmin_id",
+        foreignField: "_id",
+        as: "subadmin"
       }
     }
   ]).exec(function (err, result) {
