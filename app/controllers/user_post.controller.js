@@ -10,36 +10,51 @@ exports.createPost = (req, res) => {
 };
 
 function PostCreation(req, res, obj) {
+  let isAdmin;
+  if (req.body.subadmin == true && req.body.subadmin !== undefined) {
+    isAdmin = true
+    req.body.poststatus = 'Approved'
+  }
+  else {
+    isAdmin = false
+  }
   const newPost = new UserPost(obj);
   newPost
     .save()
     .then(data => {
       if (data) {
-
-        const jobTitle = data.job_title;
-        const userId = data.user_id;
-        User.find()
-          .then(users => {
-            users.forEach(element => {
-              if (element._id.equals(userId)) {
-                console.log('***************');
-                console.log('do not send notification');
-              } else {
-                element.skills.forEach(skills => {
-                  console.log(skills);
-                  console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
-                  let regiatrationToken = element.registration_token;
-                  sendNotifications(regiatrationToken, data, res);
-                })
-              }
+        if (isAdmin) {
+          const jobTitle = data.job_title;
+          const userId = data.user_id;
+          User.find()
+            .then(users => {
+              users.forEach(element => {
+                if (element._id.equals(userId)) {
+                  console.log('***************');
+                  console.log('do not send notification');
+                } else {
+                  element.skills.forEach(skills => {
+                    console.log(skills);
+                    console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
+                    let regiatrationToken = element.registration_token;
+                    sendNotifications(regiatrationToken, data, res);
+                  })
+                }
+              })
             })
-          })
-          .catch(err => {
-            return res.status(200).json({
-              status: false,
-              message: err.message
+            .catch(err => {
+              return res.status(200).json({
+                status: false,
+                message: err.message
+              })
             })
+        }
+        else {
+          res.send({
+            success: true,
+            data: data
           })
+        }
       } else {
         return res.status(200).send({
           status: false,
@@ -55,28 +70,23 @@ function PostCreation(req, res, obj) {
     });
 }
 
-
-
-exports.createAdminPost = (req, res) => {
-  const adminPost = new AdminPost(req.body)
-  adminPost.save().then(data => {
-    res.send({
-      success: true,
-      data: data
-    })
-  }).catch(err => {
-    res.send({
-      success: false,
-      message: err.message
-    })
-  })
-
-}
+// exports.createAdminPost = (req, res) => {
+//   const adminPost = new AdminPost(req.body)
+//   adminPost.save().then(data => {
+//     res.send({
+//       success: true,
+//       data: data
+//     })
+//   }).catch(err => {
+//     res.send({
+//       success: false,
+//       message: err.message
+//     })
+//   })
+// }
 
 function sendNotifications(registrationToken, data, res) {
-
   console.log(data);
-
   const payload = {
     // "notification": {
     //   "title": data.job_title,
@@ -117,8 +127,40 @@ function sendNotifications(registrationToken, data, res) {
 }
 
 exports.getAllPost = (req, res) => {
-  UserPost.find()
-    .then(data => {
+  UserPost.aggregate([
+    {
+      $match: {
+        $or: [
+                {
+                  $and: [
+                    { subadmin: false },
+                    { poststatus: "Approved" }
+                  ]
+                },
+                { subadmin: true },
+              ]
+      }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "user_id",
+        foreignField: "_id",
+        as: "user"
+      }
+    },
+    {
+      $lookup: {
+        from: "subadmins",
+        localField: "subadmin_id",
+        foreignField: "_id",
+        as: "subadmin"
+      }
+    }
+  ])
+     .then(data => {
+      console.log(data);
+
       if (data) {
         return res.status(200).send({
           status: true,
@@ -205,12 +247,12 @@ exports.getPostByPostId = (req, res) => {
 
 
 exports.findpostbyAdmin = (req, res) => {
-  AdminPost.aggregate([
+  UserPost.aggregate([
     {
       $match: {
         $and: [
           {
-            user_id: mongoose.Types.ObjectId(req.params.adminid)
+            subadmin_id: mongoose.Types.ObjectId(req.params.adminid)
           },
           { subadmin: true },
 
@@ -219,10 +261,10 @@ exports.findpostbyAdmin = (req, res) => {
     },
     {
       $lookup: {
-        from: "subadmins",
+        from: "users",
         localField: "user_id",
         foreignField: "_id",
-        as: "Subadmin"
+        as: "user"
       }
     }
   ]).exec(function (err, result) {
@@ -242,19 +284,19 @@ exports.findpostbyAdmin = (req, res) => {
 };
 
 exports.ListofNewPost = (req, res) => {
-  AdminPost.aggregate([
+  UserPost.aggregate([
     {
       $match: {
-        subadmin: true
+        subadmin: false,
 
       }
     },
     {
       $lookup: {
-        from: "subadmins",
+        from: "users",
         localField: "user_id",
         foreignField: "_id",
-        as: "Subadmin"
+        as: "user"
       }
     }
   ]).exec(function (err, result) {
@@ -284,7 +326,8 @@ exports.updatePost = (req, res) => {
         contact_type: req.body.contact_type,
         status: req.body.status,
         contact_detail: req.body.contact_detail,
-        budget: req.body.budget
+        budget: req.body.budget,
+        job_completed: req.body.job_completed
       }
     }, {
       new: true
@@ -565,55 +608,16 @@ exports.delete = (req, res) => {
 
 
 exports.updatePostStatus = (req, res) => {
-  let postdata = {}
-  if (req.body.status == 'Approved') {
-    AdminPost.findById(req.params.id).then(result => {
-      postdata = result;
-    })
-    statuscheck = true
-  }
-  else {
-    statuscheck = false
-  }
-  AdminPost.updateOne({
+  UserPost.updateOne({
     _id: req.params.id
   }, {
       $set: { poststatus: req.body.status }
     }, { new: true }).then(data => {
-      if (data && statuscheck) {
-       
-        // console.log('............');
-        let obj={
-          subadmin:postdata.subadmin,
-          poststatus:postdata.poststatus,
-          job_title:postdata.job_title,
-          job_description:postdata.job_description,
-          job_category:postdata.job_category,
-          job_location:postdata.job_location,
-          job_location:postdata.job_location,
-          contact_type:postdata.contact_type,
-          budget:postdata.budget,
-          job_completed:postdata.job_completed,
-          user_id:postdata.user_id,
-          contact_detail:postdata.contact_detail,
-          status:postdata.status
-        }
-        // console.log(postdata);
-         PostCreation(req, res, obj);
-      }
-      else {
-        AdminPost.updateOne({
-          _id: req.params.id
-        }, {
-            $set: { poststatus: req.body.status }
-          }, { new: true }).then(data=>{
-            res.send({
-              success:true,
-              message:'Status Updated'
-            })
-          })
-        
-      }
+
+      res.send({
+        success: true,
+        message: 'Status Updated'
+      })
     }).catch(err => {
       res.send({
         success: false,
@@ -622,29 +626,29 @@ exports.updatePostStatus = (req, res) => {
     })
 }
 
-exports.fetchpostbystatus=(req,res)=>{
-  let status=req.params.poststatus
- 
-  AdminPost.find({
-    poststatus:status
-  }).then(data=>{
-    if(data) {
+exports.fetchpostbystatus = (req, res) => {
+  let status = req.params.poststatus
+
+  UserPost.find({
+    poststatus: status
+  }).then(data => {
+    if (data) {
       res.send({
-        success:true,
-        data:data
+        success: true,
+        data: data
 
       })
     }
     else {
       res.send({
-        success:true,
-        message:'No Post Found'
+        success: true,
+        message: 'No Post Found'
       })
     }
-  }).catch(err=>{
+  }).catch(err => {
     res.send({
-      success:false,
-      message:err.message
+      success: false,
+      message: err.message
     })
   })
 }

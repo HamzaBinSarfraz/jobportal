@@ -18,16 +18,14 @@ var UserSchema = mongoose.Schema({
         require: true,
         enum: ['not assigned', 'assigned', 'completed']
     },
+    poststatus: String,
     subadmin: {
         type: Boolean,
         default: false
       },
+      subadmin_id:mongoose.Schema.Types.ObjectId, 
     job_completed:String,
-    // post_status:{
-    //     type: String,
-    //     default: null
-    //   },
-}, {
+    },{
     timestamps: true
 });
 

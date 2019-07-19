@@ -1,6 +1,6 @@
 module.exports = app => {
   const UserPost = require("../controllers/user_post.controller");
-  // Create a new user
+  // Create a new user 
   app.post("/userpost", UserPost.createPost);
   app.get('/userpost', UserPost.getAllPost);
   app.get('/userpost/:userId', UserPost.findOnePost);
@@ -17,7 +17,7 @@ module.exports = app => {
   app.delete('/clearpost', UserPost.delete)
 
   // Creating SubAdminPost
-  app.post("/adminpost", UserPost.createAdminPost);
+  // app.post("/adminpost", UserPost.createPost);
 
   // Get  post created by login subadmin this is for Data Entry Role where user see only his post
   app.get('/userpostbyadmin/:adminid', UserPost.findpostbyAdmin);
