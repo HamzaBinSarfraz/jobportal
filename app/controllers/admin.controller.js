@@ -98,6 +98,7 @@ exports.login = (req, res) => {
     }
   )
     .then(data => {
+      if(data){
       if (data.password == req.body.password) {
         return res.status(200).send({
           status: true,
@@ -106,9 +107,16 @@ exports.login = (req, res) => {
       } else {
         return res.status(200).send({
           status: false,
-          message: "user not found"
+          message: "Password Not Match"
         })
       }
+    }
+    else{
+      return res.status(200).send({
+        status: false,
+        message: "user not found"
+      })
+    }
     })
     .catch(err => {
       res.status(200).send({
