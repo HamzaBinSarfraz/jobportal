@@ -8,8 +8,8 @@ exports.sendChatMessages = (req, res) => {
     if (typeof req.file !== 'undefined') {
         let type = 'file'
         console.log('yes m here');
-        var name = 'https://job-portal-asad.herokuapp.com/' + req.file.filename;
-        // var name = 'http://localhost:5000/' + req.file.filename;
+        // var name = 'https://job-portal-asad.herokuapp.com/' + req.file.filename;
+        var name = 'http://1d4d2e35.ngrok.io/' + req.file.filename;
 
         let msg = {
             sender: req.body.sender,
