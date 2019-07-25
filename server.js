@@ -45,3 +45,47 @@ mongoose
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to job portal" });
 });
+
+
+
+
+const publicDir = require('path').join(__dirname, './images');
+// console.log(publicDir);
+app.use(express.static(publicDir));
+
+
+// import all routes at once
+require("./config/routes.config")(app);
+
+//require('.//app/routes/custom_clearance_routes')(app)
+// listen for requests
+// var port = process.env.PORT || 5000;
+// server.listen(port, "0.0.0.0", () => {
+//   console.log("Server is listening on port " + port);
+// });
+
+app.listen(8088, () => {
+  ngrok.connect(8088).then(ngrokUrl => {
+    console.log('server is running');
+    
+    endpoint = ngrokUrl
+    console.log(`Verification Service running, open at ${endpoint}`)
+  })
+})
+
+// opening Socket Connection.
+io.sockets.on('connection', function (socket) {
+  // console.log(socket.id);
+  
+  connections.push(socket);
+  console.log('connected: %s socket connected', connections.length)
+
+  // Disconnect the socket
+  socket.on('disconnect', function (data) {
+    connections.splice(connections.indexOf(socket), 1)
+    console.log('Disconnected: %s socket connected', connections.length)
+  })
+
+})
+
+
