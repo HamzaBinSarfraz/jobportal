@@ -19,6 +19,8 @@ function PostCreation(req, res, obj) {
     isAdmin = false
   }
   const newPost = new UserPost(obj);
+ let issubadmin=obj.subadmin;
+  
   newPost
     .save()
     .then(data => {
@@ -28,6 +30,7 @@ function PostCreation(req, res, obj) {
           const userId = data.user_id;
           User.find()
             .then(users => {
+              if(!issubadmin){
               users.forEach(element => {
                 if (element._id.equals(userId)) {
                   console.log('***************');
@@ -41,6 +44,13 @@ function PostCreation(req, res, obj) {
                   })
                 }
               })
+            }
+            else {
+              res.send({
+                success:true,
+                messagage:' User Post Created Successfully'
+              })
+            }
             })
             .catch(err => {
               return res.status(200).json({
