@@ -59,19 +59,19 @@ require("./config/routes.config")(app);
 
 //require('.//app/routes/custom_clearance_routes')(app)
 // listen for requests
-// var port = process.env.PORT || 5000;
-// server.listen(port, "0.0.0.0", () => {
-//   console.log("Server is listening on port " + port);
-// });
+let port = process.env.PORT || 5000;
+server.listen(port, () => {
+  console.log("Server is listening on port " + port);
+});
 
-app.listen(8088, () => {
-  ngrok.connect(8088).then(ngrokUrl => {
-    console.log('server is running');
+// app.listen(8088, () => {
+//   ngrok.connect(8088).then(ngrokUrl => {
+//     console.log('server is running');
     
-    endpoint = ngrokUrl
-    console.log(`Verification Service running, open at ${endpoint}`)
-  })
-})
+//     endpoint = ngrokUrl
+//     console.log(`Verification Service running, open at ${endpoint}`)
+//   })
+// })
 
 // opening Socket Connection.
 io.sockets.on('connection', function (socket) {
