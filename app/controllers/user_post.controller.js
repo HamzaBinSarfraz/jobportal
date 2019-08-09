@@ -592,8 +592,14 @@ exports.searchWithJobTitle = (req, res) => {
 exports.matchSkills = (req, res) => {
   const arr = req.body.job_category
   UserPost.find({
+    $and:[{
+      job_category: req.body.job_category
+    },
+    {
+      poststatus:'Approved'
+    }],
     // job_category: { $in: arr }
-    job_category: req.body.job_category
+    
   })
     .then(data => {
       if (data.length > 0) {
