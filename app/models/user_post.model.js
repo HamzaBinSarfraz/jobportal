@@ -18,7 +18,8 @@ var UserSchema = mongoose.Schema({
         require: true,
         enum: ['not assigned', 'assigned', 'completed']
     },
-    poststatus: String,
+    poststatus: {type:String,
+    default:null},
     subadmin: {
         type: Boolean,
         default: false
