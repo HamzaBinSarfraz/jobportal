@@ -634,22 +634,86 @@ exports.delete = (req, res) => {
 
 
 exports.updatePostStatus = (req, res) => {
-  UserPost.updateOne({
-    _id: req.params.id
-  }, {
-      $set: { poststatus: req.body.status }
-    }, { new: true }).then(data => {
-
-      res.send({
-        success: true,
-        message: 'Status Updated'
+UserPost.findById(req.params.id).then(data=>{
+  if(data) {
+  let postobj= data;
+  postobj.poststatus=req.body.status
+  console.log(postobj);
+  UserPost.findByIdAndUpdate(req.params.id,postobj,{
+    new: true
+  }).then(result=>{
+    if(result.poststatus=='Approved') {
+      const jobTitle = result.job_title;
+      const userId = result.user_id;
+      let issubadmin=result.subadmin;
+      User.find()
+      .then(users => {
+        if(!issubadmin){
+        users.forEach(element => {
+          if (element._id.equals(userId)) {
+            console.log('***************');
+            console.log('do not send notification');
+          } else {
+            element.skills.forEach(skills => {
+              console.log(skills);
+              console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
+              let regiatrationToken = element.registration_token;
+              sendNotifications(regiatrationToken, data, res);
+            })
+          }
+        })
+      }
+      else {
+        res.send({
+          success:true,
+          messagage:' Post Updated'
+        })
+      }
       })
-    }).catch(err => {
-      res.send({
-        success: false,
-        message: err.message
+      .catch(err => {
+        return res.status(200).json({
+          status: false,
+          message: err.message
+        })
       })
+    }
+    res.send({
+      success:true,
+      data:result
     })
+    
+  })
+  }
+  else{
+    res.send({
+      success:true,
+      message:'No Record found for update'
+    })
+  }
+}).catch(err=>{
+  res.send({
+    success:true,
+    message:err.message
+  })
+})
+
+//   UserPost.updateOne({
+//     _id: req.params.id
+//   }, {
+//       $set: { poststatus: req.body.status }
+//     }, { new: true }).then(data => {
+// console.log(data);
+
+//       res.send({
+//         success: true,
+//         message: 'Status Updated'
+//       })
+//     }).catch(err => {
+//       res.send({
+//         success: false,
+//         message: err.message
+//       })
+//     })
 }
 
 exports.fetchpostbystatus = (req, res) => {
