@@ -60,7 +60,7 @@ require("./config/routes.config")(app);
 //require('.//app/routes/custom_clearance_routes')(app)
 // listen for requests
 let port = process.env.PORT || 5000;
-server.listen(port, () => {
+server.listen(port,  '153.92.4.132' , () => {
   console.log("Server is listening on port " + port);
 });
 
