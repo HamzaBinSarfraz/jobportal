@@ -9,7 +9,7 @@ exports.sendChatMessages = (req, res) => {
         let type = 'file'
         console.log('yes m here');
         // var name = 'https://job-portal-asad.herokuapp.com/' + req.file.filename;
-        var name = 'https://b944022d.ngrok.io/' + req.file.filename;
+        var name = 'http://153.92.4.132:5000/' + req.file.filename;
 
         let msg = {
             sender: req.body.sender,
