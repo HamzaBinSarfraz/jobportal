@@ -6,10 +6,19 @@ const mongoose = require('mongoose');
 const AdminPost = require('../models/subadmin_post.model')
 exports.createPost = (req, res) => {
   let obj = req.body
-  PostCreation(req, res, obj)
+  if (typeof req.file !== 'undefined') {
+    let obj1 = obj;
+    obj1.file = req.file.filename
+    PostCreation(req, res, obj1)
+  }
+  else {
+    PostCreation(req, res, obj)
+  }
+  // 
 };
 
 function PostCreation(req, res, obj) {
+
   let isAdmin;
   if (req.body.subadmin == true && req.body.subadmin !== undefined) {
     isAdmin = true
@@ -19,8 +28,8 @@ function PostCreation(req, res, obj) {
     isAdmin = false
   }
   const newPost = new UserPost(obj);
- let issubadmin=obj.subadmin;
-  
+  let issubadmin = obj.subadmin;
+
   newPost
     .save()
     .then(data => {
@@ -30,27 +39,27 @@ function PostCreation(req, res, obj) {
           const userId = data.user_id;
           User.find()
             .then(users => {
-              if(!issubadmin){
-              users.forEach(element => {
-                if (element._id.equals(userId)) {
-                  console.log('***************');
-                  console.log('do not send notification');
-                } else {
-                  element.skills.forEach(skills => {
-                    console.log(skills);
-                    console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
-                    let regiatrationToken = element.registration_token;
-                    sendNotifications(regiatrationToken, data, res);
-                  })
-                }
-              })
-            }
-            else {
-              res.send({
-                success:true,
-                messagage:' User Post Created Successfully'
-              })
-            }
+              if (!issubadmin) {
+                users.forEach(element => {
+                  if (element._id.equals(userId)) {
+                    console.log('***************');
+                    console.log('do not send notification');
+                  } else {
+                    element.skills.forEach(skills => {
+                      console.log(skills);
+                      console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
+                      let regiatrationToken = element.registration_token;
+                      sendNotifications(regiatrationToken, data, res);
+                    })
+                  }
+                })
+              }
+              else {
+                res.send({
+                  success: true,
+                  messagage: ' User Post Created Successfully'
+                })
+              }
             })
             .catch(err => {
               return res.status(200).json({
@@ -141,14 +150,14 @@ exports.getAllPost = (req, res) => {
     {
       $match: {
         $or: [
-                {
-                  $and: [
-                    { subadmin: false },
-                    { poststatus: "Approved" }
-                  ]
-                },
-                { subadmin: true },
-              ]
+          {
+            $and: [
+              { subadmin: false },
+              { poststatus: "Approved" }
+            ]
+          },
+          { subadmin: true },
+        ]
       }
     },
     {
@@ -168,7 +177,7 @@ exports.getAllPost = (req, res) => {
       }
     }
   ])
-     .then(data => {
+    .then(data => {
       console.log(data);
 
       if (data) {
@@ -258,7 +267,7 @@ exports.getPostByPostId = (req, res) => {
 
 exports.findpostbyAdmin = (req, res) => {
   console.log(req.params.adminid);
-  
+
   UserPost.aggregate([
     {
       $match: {
@@ -592,14 +601,14 @@ exports.searchWithJobTitle = (req, res) => {
 exports.matchSkills = (req, res) => {
   const arr = req.body.job_category
   UserPost.find({
-    $and:[{
+    $and: [{
       job_category: req.body.job_category
     },
     {
-      poststatus:'Approved'
+      poststatus: 'Approved'
     }],
     // job_category: { $in: arr }
-    
+
   })
     .then(data => {
       if (data.length > 0) {
@@ -634,86 +643,86 @@ exports.delete = (req, res) => {
 
 
 exports.updatePostStatus = (req, res) => {
-UserPost.findById(req.params.id).then(data=>{
-  if(data) {
-  let postobj= data;
-  postobj.poststatus=req.body.status
-  console.log(postobj);
-  UserPost.findByIdAndUpdate(req.params.id,postobj,{
-    new: true
-  }).then(result=>{
-    if(result.poststatus=='Approved') {
-      const jobTitle = result.job_title;
-      const userId = result.user_id;
-      let issubadmin=result.subadmin;
-      User.find()
-      .then(users => {
-        if(!issubadmin){
-        users.forEach(element => {
-          if (element._id.equals(userId)) {
-            console.log('***************');
-            console.log('do not send notification');
-          } else {
-            element.skills.forEach(skills => {
-              console.log(skills);
-              console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
-              let regiatrationToken = element.registration_token;
-              sendNotifications(regiatrationToken, data, res);
+  UserPost.findById(req.params.id).then(data => {
+    if (data) {
+      let postobj = data;
+      postobj.poststatus = req.body.status
+      console.log(postobj);
+      UserPost.findByIdAndUpdate(req.params.id, postobj, {
+        new: true
+      }).then(result => {
+        if (result.poststatus == 'Approved') {
+          const jobTitle = result.job_title;
+          const userId = result.user_id;
+          let issubadmin = result.subadmin;
+          User.find()
+            .then(users => {
+              if (!issubadmin) {
+                users.forEach(element => {
+                  if (element._id.equals(userId)) {
+                    console.log('***************');
+                    console.log('do not send notification');
+                  } else {
+                    element.skills.forEach(skills => {
+                      console.log(skills);
+                      console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
+                      let regiatrationToken = element.registration_token;
+                      sendNotifications(regiatrationToken, data, res);
+                    })
+                  }
+                })
+              }
+              else {
+                res.send({
+                  success: true,
+                  messagage: ' Post Updated'
+                })
+              }
             })
-          }
-        })
-      }
-      else {
+            .catch(err => {
+              return res.status(200).json({
+                status: false,
+                message: err.message
+              })
+            })
+        }
         res.send({
-          success:true,
-          messagage:' Post Updated'
+          success: true,
+          data: result
         })
-      }
-      })
-      .catch(err => {
-        return res.status(200).json({
-          status: false,
-          message: err.message
-        })
+
       })
     }
+    else {
+      res.send({
+        success: true,
+        message: 'No Record found for update'
+      })
+    }
+  }).catch(err => {
     res.send({
-      success:true,
-      data:result
+      success: true,
+      message: err.message
     })
-    
   })
-  }
-  else{
-    res.send({
-      success:true,
-      message:'No Record found for update'
-    })
-  }
-}).catch(err=>{
-  res.send({
-    success:true,
-    message:err.message
-  })
-})
 
-//   UserPost.updateOne({
-//     _id: req.params.id
-//   }, {
-//       $set: { poststatus: req.body.status }
-//     }, { new: true }).then(data => {
-// console.log(data);
+  //   UserPost.updateOne({
+  //     _id: req.params.id
+  //   }, {
+  //       $set: { poststatus: req.body.status }
+  //     }, { new: true }).then(data => {
+  // console.log(data);
 
-//       res.send({
-//         success: true,
-//         message: 'Status Updated'
-//       })
-//     }).catch(err => {
-//       res.send({
-//         success: false,
-//         message: err.message
-//       })
-//     })
+  //       res.send({
+  //         success: true,
+  //         message: 'Status Updated'
+  //       })
+  //     }).catch(err => {
+  //       res.send({
+  //         success: false,
+  //         message: err.message
+  //       })
+  //     })
 }
 
 exports.fetchpostbystatus = (req, res) => {

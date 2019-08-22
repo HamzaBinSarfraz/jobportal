@@ -26,6 +26,7 @@ var UserSchema = mongoose.Schema({
       },
       subadmin_id:mongoose.Schema.Types.ObjectId, 
     job_completed:String,
+    file:String,
     },{
     timestamps: true
 });

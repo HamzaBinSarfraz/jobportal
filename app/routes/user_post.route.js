@@ -1,7 +1,9 @@
 module.exports = app => {
   const UserPost = require("../controllers/user_post.controller");
+  const file= require('../middleware/post_image.middleware')
+
   // Create a new user 
-  app.post("/userpost", UserPost.createPost);
+  app.post("/userpost",file, UserPost.createPost);
   app.get('/userpost', UserPost.getAllPost);
   app.get('/userpost/:userId', UserPost.findOnePost);
   app.get('/userpostbyid/:postId', UserPost.getPostByPostId);
