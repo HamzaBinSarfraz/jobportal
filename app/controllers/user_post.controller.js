@@ -611,7 +611,7 @@ exports.matchSkills = (req, res) => {
     }],
     // job_category: { $in: arr }
 
-  })
+  }).sort({createdAt:-1})
     .then(data => {
       if (data.length > 0) {
         return res.status(200).json({
