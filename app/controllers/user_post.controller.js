@@ -631,7 +631,21 @@ exports.matchSkills = (req, res) => {
       })
     })
 }
-
+exports.getPostStatusUser=(req,res)=>{
+  UserPost.find({
+    poststatus_user:req.params.user
+  }).then(data=>{
+    res.send({
+      success:true,
+      data:data
+    }).catch(err=>{
+      res.send({
+        success:false,
+        message:'No Post Found'
+      })
+    })
+  })
+}
 
 exports.delete = (req, res) => {
   UserPost.remove().then(data => {

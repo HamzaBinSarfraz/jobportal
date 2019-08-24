@@ -35,4 +35,7 @@ module.exports = app => {
   /*  fetching the post on basis of Post Status */
 
   app.get('/fetchpostbystatus/:poststatus',UserPost.fetchpostbystatus)
+
+  app.get('/getpostbystatus_user/:user', UserPost.getPostStatusUser);
+
 };
