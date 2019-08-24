@@ -157,9 +157,11 @@ exports.getAllPost = (req, res) => {
             ]
           },
           { subadmin: true },
-        ]
+        ],
+        
       }
     },
+    { $sort : { createdAt : -1 } },
     {
       $lookup: {
         from: "users",
@@ -203,7 +205,7 @@ exports.getAllPost = (req, res) => {
 exports.findOnePost = (req, res) => {
   UserPost.find({
     user_id: req.params.userId
-  })
+  }).sort({createdAt:-1})
     .then(post => {
       if (!post) {
         return res.status(200).send({
@@ -234,7 +236,7 @@ exports.findOnePost = (req, res) => {
 exports.getPostByPostId = (req, res) => {
   UserPost.find({
     _id: req.params.postId
-  })
+  }).sort({createdAt:-1})
     .then(post => {
       if (!post) {
         return res.status(200).send({
@@ -279,7 +281,7 @@ exports.findpostbyAdmin = (req, res) => {
 
         ]
       }
-    },
+    }, { $sort : { createdAt : -1 } },
     {
       $lookup: {
         from: "users",
@@ -319,7 +321,7 @@ exports.ListofNewPost = (req, res) => {
         subadmin: false,
 
       }
-    },
+    }, { $sort : { createdAt : -1 } },
     {
       $lookup: {
         from: "users",
@@ -727,15 +729,13 @@ exports.updatePostStatus = (req, res) => {
 
 exports.fetchpostbystatus = (req, res) => {
   let status = req.params.poststatus
-
   UserPost.find({
     poststatus: status
-  }).then(data => {
+  }).sort({createdAt:-1}).then(data => {
     if (data) {
       res.send({
         success: true,
         data: data
-
       })
     }
     else {
