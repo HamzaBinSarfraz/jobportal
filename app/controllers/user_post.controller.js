@@ -158,10 +158,9 @@ exports.getAllPost = (req, res) => {
           },
           { subadmin: true },
         ],
-        
       }
     },
-    { $sort : { createdAt : -1 } },
+    { $sort: { createdAt: -1 } },
     {
       $lookup: {
         from: "users",
@@ -205,7 +204,7 @@ exports.getAllPost = (req, res) => {
 exports.findOnePost = (req, res) => {
   UserPost.find({
     user_id: req.params.userId
-  }).sort({createdAt:-1})
+  }).sort({ createdAt: -1 })
     .then(post => {
       if (!post) {
         return res.status(200).send({
@@ -236,7 +235,7 @@ exports.findOnePost = (req, res) => {
 exports.getPostByPostId = (req, res) => {
   UserPost.find({
     _id: req.params.postId
-  }).sort({createdAt:-1})
+  }).sort({ createdAt: -1 })
     .then(post => {
       if (!post) {
         return res.status(200).send({
@@ -281,7 +280,7 @@ exports.findpostbyAdmin = (req, res) => {
 
         ]
       }
-    }, { $sort : { createdAt : -1 } },
+    }, { $sort: { createdAt: -1 } },
     {
       $lookup: {
         from: "users",
@@ -321,7 +320,7 @@ exports.ListofNewPost = (req, res) => {
         subadmin: false,
 
       }
-    }, { $sort : { createdAt : -1 } },
+    }, { $sort: { createdAt: -1 } },
     {
       $lookup: {
         from: "users",
@@ -611,7 +610,7 @@ exports.matchSkills = (req, res) => {
     }],
     // job_category: { $in: arr }
 
-  }).sort({createdAt:-1})
+  }).sort({ createdAt: -1 })
     .then(data => {
       if (data.length > 0) {
         return res.status(200).json({
@@ -649,6 +648,7 @@ exports.updatePostStatus = (req, res) => {
     if (data) {
       let postobj = data;
       postobj.poststatus = req.body.status
+      postobj.poststatus_user=req.body.poststatus_user
       console.log(postobj);
       UserPost.findByIdAndUpdate(req.params.id, postobj, {
         new: true
@@ -731,7 +731,7 @@ exports.fetchpostbystatus = (req, res) => {
   let status = req.params.poststatus
   UserPost.find({
     poststatus: status
-  }).sort({createdAt:-1}).then(data => {
+  }).sort({ createdAt: -1 }).then(data => {
     if (data) {
       res.send({
         success: true,

@@ -20,6 +20,7 @@ var UserSchema = mongoose.Schema({
     },
     poststatus: {type:String,
     default:null},
+    poststatus_user: mongoose.Schema.Types.ObjectId, 
     subadmin: {
         type: Boolean,
         default: false
