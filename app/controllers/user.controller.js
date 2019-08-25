@@ -51,7 +51,8 @@ function CreateUserData(req,res) {
     // let imagePath = 'http://153.92.4.132:5000/' + req.file.path;
     // imagePath = imagePath.split('/images/').join('/')
     // console.log(imagePath);
-    let imagePath = req.file.path;
+    // let imagePath = req.file.path;
+    let imagePath =  req.file.path.replace('images/','')
     const newUser = new UserSchema( {
       name: req.body.name,
       username: req.body.username,
