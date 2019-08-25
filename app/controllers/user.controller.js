@@ -48,10 +48,10 @@ function CreateUserData(req,res) {
   console.log(req.body);
   
   if (typeof req.file !== 'undefined') {
-    let imagePath = 'http://153.92.4.132:5000/' + req.file.path;
-    imagePath = imagePath.split('/images/').join('/')
-    console.log(imagePath);
-
+    // let imagePath = 'http://153.92.4.132:5000/' + req.file.path;
+    // imagePath = imagePath.split('/images/').join('/')
+    // console.log(imagePath);
+    let imagePath = req.file.path;
     const newUser = new UserSchema( {
       name: req.body.name,
       username: req.body.username,
