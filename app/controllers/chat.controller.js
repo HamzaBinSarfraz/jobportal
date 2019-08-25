@@ -2,6 +2,8 @@
 const ChatSchema = require('../models/chat.model');
 const postSchama = require('../models/user_post.model')
 const userSchema = require("../models/user.model")
+const admin = require("firebase-admin");
+require('../../config/fcm/initialize_app');
 exports.sendChatMessages = (req, res) => {
     console.log('............');
     console.log(req.body.postid);
@@ -9,10 +11,8 @@ exports.sendChatMessages = (req, res) => {
         let type = 'file'
         console.log('yes m here');
         // var name = 'https://job-portal-asad.herokuapp.com/' + req.file.filename;
-        
-        var name =  req.file.filename;
-
-        let msg = {
+        var name = req.file.filename;
+        let msg1 = {
             sender: req.body.sender,
             receiver: req.body.receiver,
             room: req.body.room,
@@ -22,28 +22,80 @@ exports.sendChatMessages = (req, res) => {
             type: type,
             message: name
         }
-
-        console.log(msg);
-
-        const chat = new ChatSchema(msg);
-
-        chat.save().then(data => {
-            global.io.emit('send_message', msg);
-            res.end()
-        })
+        savechat(req, res, msg1)
     }
     else {
         let type = 'text'
         let msg = req.body
         msg.type = type;
-        const chat = new ChatSchema(msg);
-        chat.save().then(data => {
-            global.io.emit('send_message', msg);
-            res.end()
-        })
+        savechat(req, res, msg)
     }
 }
 
+function savechat(req, res, msg) {
+    const chat = new ChatSchema(msg);
+    chat.save().then(data => {
+        let receiver = data.receiverid
+        userSchema.findById(receiver)
+            .then(result => {
+                console.log('result');
+                console.log(result);
+                if (result.registration_token != null && result.registration_token != undefined) {
+                    console.log('token');
+                    let token = result.registration_token;
+                    sendNotifications(token, data, res);
+                }
+                else {
+                    console.log('***************');
+                    console.log('do not send notification');
+                }
+            })
+        global.io.emit('send_message', msg);
+        res.end()
+    })
+}
+
+function sendNotifications(registrationToken, data, res) {
+    console.log(data);
+    const payload = {
+
+        "data": {
+            "title": "New Message",
+            "sender": data.sender,
+            "receiver": data.receiver,
+            "room": data.room,
+            "message": data.message,
+            "time_stamp": data.createdAt.toString()
+
+        }
+    }
+
+    const options = {
+        "title": "New Message",
+        "sender": data.sender,
+        "receiver": data.receiver,
+        "room": data.room,
+        "message": data.message,
+        "time_stamp": data.createdAt
+    };
+
+    admin.messaging().sendToDevice(registrationToken, payload, options)
+        .then((response) => {
+            console.log("Successfully sent message:", response);
+            console.log("Error ::: ", response.results[0].error);
+            res.status(200).json({
+                status: true,
+                message: "New Message Notification Send"
+            });
+        })
+        .catch((error) => {
+            console.log("Error sending message:", error);
+            res.status(200).json({
+                status: false,
+                message: err.message
+            });
+        });
+}
 
 exports.getChatByRoom = (req, res) => {
     ChatSchema.find({ room: req.params.room }).then(data => {
