@@ -415,8 +415,9 @@ exports.updateRegistrationToken = (req, res) => {
 
 exports.updateUser = (req, res) => {
   if (req.file !== undefined) {
-    let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
-    imagePath = imagePath.split('/images/').join('/');
+    let imagePath =  req.file.path.replace('images/','')
+    // let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
+    // imagePath = imagePath.split('/images/').join('/');
     UserSchema.update({
       _id: req.params.id
     }, {
