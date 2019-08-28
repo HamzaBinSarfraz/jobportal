@@ -658,13 +658,14 @@ exports.delete = (req, res) => {
 
 
 exports.updatePostStatus = (req, res) => {
-  UserPost.findById(req.params.id).then(data => {
-    if (data) {
-      let postobj = data;
-      postobj.poststatus = req.body.status
-      postobj.poststatus_user=req.body.poststatus_user
-      console.log(postobj);
-      UserPost.findByIdAndUpdate(req.params.id, postobj, {
+  // let obj = req.body;
+  // UserPost.findById(req.params.id).then(data => {
+  //   if (data) {
+  //     let postobj = data;
+  //     postobj.poststatus = req.body.status
+  //     postobj.poststatus_user=req.body.poststatus_user
+  //     console.log(postobj);
+      UserPost.findByIdAndUpdate(req.params.id, obj, {
         new: true
       }).then(result => {
         if (result.poststatus == 'Approved') {
@@ -708,19 +709,19 @@ exports.updatePostStatus = (req, res) => {
         })
 
       })
-    }
-    else {
-      res.send({
-        success: true,
-        message: 'No Record found for update'
-      })
-    }
-  }).catch(err => {
-    res.send({
-      success: true,
-      message: err.message
-    })
-  })
+    // }
+    // else {
+    //   res.send({
+    //     success: true,
+    //     message: 'No Record found for update'
+    //   })
+    // }
+  // }).catch(err => {
+  //   res.send({
+  //     success: true,
+  //     message: err.message
+  //   })
+  // })
 
   //   UserPost.updateOne({
   //     _id: req.params.id
