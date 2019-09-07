@@ -36,6 +36,6 @@ module.exports = app => {
 
   app.get('/fetchpostbystatus/:poststatus',UserPost.fetchpostbystatus)
 
-  app.get('/getpostbystatus_user/:user', UserPost.getPostStatusUser);
+  app.get('/getpostbystatus_user/:poststatus_user', UserPost.getPostStatusUser);
 
 };

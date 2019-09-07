@@ -357,7 +357,11 @@ exports.updatePost = (req, res) => {
         status: req.body.status,
         contact_detail: req.body.contact_detail,
         budget: req.body.budget,
-        job_completed: req.body.job_completed
+        job_completed: req.body.job_completed,
+        poststatus:req.body.poststatus,
+        poststatus_user:req.body.poststatus_user,
+        subadmin:req.body.subadmin
+
       }
     }, {
       new: true
@@ -632,19 +636,17 @@ exports.matchSkills = (req, res) => {
     })
 }
 exports.getPostStatusUser=(req,res)=>{
-  UserPost.find({
-    poststatus_user:req.params.user
-  }).then(data=>{
-    res.send({
-      success:true,
-      data:data
-    }).catch(err=>{
-      res.send({
-        success:false,
-        message:'No Post Found'
-      })
-    })
+  console.log(req.params.poststatus_user);
+  let id=req.params.poststatus_user
+
+UserPost.find({poststatus_user:id}).then(data=>{
+  console.log(data);
+  res.send({
+    success:true,
+    data:data
   })
+})
+
 }
 
 exports.delete = (req, res) => {
@@ -658,6 +660,8 @@ exports.delete = (req, res) => {
 
 
 exports.updatePostStatus = (req, res) => {
+  console.log('Running.');
+  
   // let obj = req.body;
   // UserPost.findById(req.params.id).then(data => {
   //   if (data) {
@@ -743,6 +747,7 @@ exports.updatePostStatus = (req, res) => {
 }
 
 exports.fetchpostbystatus = (req, res) => {
+ 
   let status = req.params.poststatus
   UserPost.find({
     poststatus: status
