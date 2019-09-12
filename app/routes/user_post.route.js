@@ -30,7 +30,7 @@ module.exports = app => {
   app.get('/newpostlist', UserPost.ListofNewPost)
 
   // update the status of subadmin post
-  app.post('/poststatus/:id',UserPost.updatePostStatus)
+  app.put('/poststatus/:id',UserPost.updatePostStatus)
 
   /*  fetching the post on basis of Post Status */
 

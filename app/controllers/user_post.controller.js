@@ -105,7 +105,9 @@ function PostCreation(req, res, obj) {
 // }
 
 function sendNotifications(registrationToken, data, res) {
-  console.log(data);
+  console.log('inside notification function');
+  
+  // console.log(data);
   const payload = {
     // "notification": {
     //   "title": data.job_title,
@@ -664,7 +666,7 @@ exports.delete = (req, res) => {
 exports.updatePostStatus = (req, res) => {
   console.log('Running.');
   
-  // let obj = req.body;
+  let obj = req.body;
   // UserPost.findById(req.params.id).then(data => {
   //   if (data) {
   //     let postobj = data;
@@ -682,17 +684,17 @@ exports.updatePostStatus = (req, res) => {
             .then(users => {
               if (!issubadmin) {
                 users.forEach(element => {
-                  if (element._id.equals(userId)) {
-                    console.log('***************');
-                    console.log('do not send notification');
-                  } else {
+                  // if (element._id.equals(userId)) {
+                  //   console.log('***************');
+                  //   console.log('do not send notification');
+                  // } else {
                     element.skills.forEach(skills => {
-                      console.log(skills);
-                      console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
+                      // console.log(skills);
+                      // console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
                       let regiatrationToken = element.registration_token;
-                      sendNotifications(regiatrationToken, data, res);
+                      sendNotifications(regiatrationToken, users, res);
                     })
-                  }
+                  // }
                 })
               }
               else {
@@ -709,43 +711,16 @@ exports.updatePostStatus = (req, res) => {
               })
             })
         }
-        res.send({
-          success: true,
-          data: result
-        })
+        else {
+          res.send({
+            success: true,
+            data: result
+          })
+        }
+       
 
       })
-    // }
-    // else {
-    //   res.send({
-    //     success: true,
-    //     message: 'No Record found for update'
-    //   })
-    // }
-  // }).catch(err => {
-  //   res.send({
-  //     success: true,
-  //     message: err.message
-  //   })
-  // })
-
-  //   UserPost.updateOne({
-  //     _id: req.params.id
-  //   }, {
-  //       $set: { poststatus: req.body.status }
-  //     }, { new: true }).then(data => {
-  // console.log(data);
-
-  //       res.send({
-  //         success: true,
-  //         message: 'Status Updated'
-  //       })
-  //     }).catch(err => {
-  //       res.send({
-  //         success: false,
-  //         message: err.message
-  //       })
-  //     })
+    
 }
 
 exports.fetchpostbystatus = (req, res) => {
