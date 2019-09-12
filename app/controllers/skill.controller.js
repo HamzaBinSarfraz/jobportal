@@ -82,3 +82,24 @@ exports.getOneSkill=(req,res)=>{
       });
     });
 }
+exports.updateSkill=(req,res)=>{
+  SkillSchema.findByIdAndUpdate(req.params.id,req.body).then(data=>{
+    if(data){
+      res.send({
+        success:true,
+        data:data
+      })
+    }
+    else{
+      res.send({
+        success:true,
+        data:'Unable to update'
+      })
+    }
+  }).catch(err=>{
+    res.send({
+      success:false,
+      message:err.message
+    })
+  })
+}
