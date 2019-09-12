@@ -314,13 +314,15 @@ exports.findpostbyAdmin = (req, res) => {
 };
 
 exports.ListofNewPost = (req, res) => {
-  UserPost.aggregate([
-    {
-      $match: {
-        subadmin: false,
-
-      }
-    }, { $sort: { createdAt: -1 } },
+  UserPost.aggregate([{
+    $match: {
+      $and: [
+        {subadmin: false},
+        {poststatus:null}
+      ]
+    }
+    }
+    , { $sort: { createdAt: -1 } },
     {
       $lookup: {
         from: "users",
