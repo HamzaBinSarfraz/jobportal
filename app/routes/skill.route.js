@@ -6,5 +6,6 @@ module.exports = app => {
     app.get("/skill/:id", Skill.getOneSkill);
     app.put("/skill/:id", Skill.updateSkill);
     app.delete("/skill/:id", Skill.deleteSkill);
+    app.get("/unique",Skill.uniqueCat);
   };
   

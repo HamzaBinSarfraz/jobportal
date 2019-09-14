@@ -106,7 +106,7 @@ function PostCreation(req, res, obj) {
 
 function sendNotifications(registrationToken, data, res) {
   console.log('inside notification function');
-  
+
   // console.log(data);
   const payload = {
     // "notification": {
@@ -319,20 +319,20 @@ exports.ListofNewPost = (req, res) => {
   UserPost.aggregate([{
     $match: {
       $and: [
-        {subadmin: false},
-        {poststatus:null}
+        { subadmin: false },
+        { poststatus: null }
       ]
     }
-    }
+  }
     , { $sort: { createdAt: -1 } },
-    {
-      $lookup: {
-        from: "users",
-        localField: "user_id",
-        foreignField: "_id",
-        as: "user"
-      }
+  {
+    $lookup: {
+      from: "users",
+      localField: "user_id",
+      foreignField: "_id",
+      as: "user"
     }
+  }
   ]).exec(function (err, result) {
     if (result) {
       return res.status(200).send({
@@ -362,9 +362,9 @@ exports.updatePost = (req, res) => {
         contact_detail: req.body.contact_detail,
         budget: req.body.budget,
         job_completed: req.body.job_completed,
-        poststatus:req.body.poststatus,
-        poststatus_user:req.body.poststatus_user,
-        subadmin:req.body.subadmin
+        poststatus: req.body.poststatus,
+        poststatus_user: req.body.poststatus_user,
+        subadmin: req.body.subadmin
 
       }
     }, {
@@ -639,17 +639,17 @@ exports.matchSkills = (req, res) => {
       })
     })
 }
-exports.getPostStatusUser=(req,res)=>{
+exports.getPostStatusUser = (req, res) => {
   console.log(req.params.poststatus_user);
-  let id=req.params.poststatus_user
+  let id = req.params.poststatus_user
 
-UserPost.find({poststatus_user:id}).then(data=>{
-  console.log(data);
-  res.send({
-    success:true,
-    data:data
+  UserPost.find({ poststatus_user: id }).then(data => {
+    console.log(data);
+    res.send({
+      success: true,
+      data: data
+    })
   })
-})
 
 }
 
@@ -665,7 +665,7 @@ exports.delete = (req, res) => {
 
 exports.updatePostStatus = (req, res) => {
   console.log('Running.');
-  
+
   let obj = req.body;
   // UserPost.findById(req.params.id).then(data => {
   //   if (data) {
@@ -673,58 +673,54 @@ exports.updatePostStatus = (req, res) => {
   //     postobj.poststatus = req.body.status
   //     postobj.poststatus_user=req.body.poststatus_user
   //     console.log(postobj);
-      UserPost.findByIdAndUpdate(req.params.id, obj, {
-        new: true
-      }).then(result => {
-        if (result.poststatus == 'Approved') {
-          const jobTitle = result.job_title;
-          const userId = result.user_id;
-          let issubadmin = result.subadmin;
-          User.find()
-            .then(users => {
-              if (!issubadmin) {
-                users.forEach(element => {
-                  // if (element._id.equals(userId)) {
-                  //   console.log('***************');
-                  //   console.log('do not send notification');
-                  // } else {
-                    element.skills.forEach(skills => {
-                      // console.log(skills);
-                      // console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
-                      let regiatrationToken = element.registration_token;
-                      sendNotifications(regiatrationToken, users, res);
-                    })
-                  // }
-                })
-              }
-              else {
-                res.send({
-                  success: true,
-                  messagage: ' Post Updated'
-                })
-              }
-            })
-            .catch(err => {
-              return res.status(200).json({
-                status: false,
-                message: err.message
+  UserPost.findByIdAndUpdate(req.params.id, obj, {
+    new: true
+  }).then(result => {
+    if (result.poststatus == 'Approved') {
+      // const jobTitle = result.job_title;
+      // const userId = result.user_id;
+      // let issubadmin = result.subadmin;
+      User.find()
+        .then(users => {
+          let issubadmin = users.subadmin;
+ 
+          if (!issubadmin) {
+            users.forEach(element => {
+              element.skills.forEach(skills => {
+                let regiatrationToken = element.registration_token;
+                sendNotifications(regiatrationToken, result, res);
               })
+              // }
             })
-        }
-        else {
-          res.send({
-            success: true,
-            data: result
+          }
+          else {
+            res.send({
+              success: true,
+              messagage: ' Post Updated'
+            })
+          }
+        })
+        .catch(err => {
+          return res.status(200).json({
+            status: false,
+            message: err.message
           })
-        }
-       
-
+        })
+    }
+    else {
+      res.send({
+        success: true,
+        data: result
       })
-    
+    }
+
+
+  })
+
 }
 
 exports.fetchpostbystatus = (req, res) => {
- 
+
   let status = req.params.poststatus
   UserPost.find({
     poststatus: status

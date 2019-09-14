@@ -103,3 +103,27 @@ exports.updateSkill=(req,res)=>{
     })
   })
 }
+
+exports.uniqueCat=(req,res)=>{
+  SkillSchema.find().distinct('skill_category')
+  // .select('skill_category')
+  .then(data=>{
+    if(data){
+      res.send({
+        success:true,
+        data:data
+      })
+    }
+    else{
+      res.send({
+        success:true,
+        data:'Unable to update'
+      })
+    }
+  }).catch(err=>{
+    res.send({
+      success:false,
+      message:err.message
+    })
+  })
+}
