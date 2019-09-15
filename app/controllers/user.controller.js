@@ -71,12 +71,12 @@ function CreateUserData(req,res) {
       .then(data => {
         if (data) {
           return res.status(200).send({
-            status: true,
+            success: true,
             data: data
           });
         } else {
           return res.status(200).send({
-            status: false,
+            success: false,
             message: "unable to create user"
           });
         }

@@ -4,7 +4,10 @@ var UserSchema = mongoose.Schema({
     job_title: String,
     job_description: String,
     job_category: String,
-    job_location: String,
+    job_location: {
+        type: String,
+        default: 'Remote/Work from home'
+    },
     budget: String,
     contact_detail: String,
     user_id: mongoose.Schema.Types.ObjectId,
@@ -22,6 +25,9 @@ var UserSchema = mongoose.Schema({
     poststatus: {
         type: String,
         default: null
+    },
+    poststatus_date:{
+        type:Date
     },
     poststatus_user: mongoose.Schema.Types.ObjectId,
     subadmin: {

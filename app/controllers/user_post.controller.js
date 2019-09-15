@@ -39,7 +39,7 @@ function PostCreation(req, res, obj) {
           const userId = data.user_id;
           User.find()
             .then(users => {
-              if (!issubadmin) {
+              // if (!issubadmin) {
                 users.forEach(element => {
                   if (element._id.equals(userId)) {
                     console.log('***************');
@@ -53,13 +53,13 @@ function PostCreation(req, res, obj) {
                     })
                   }
                 })
-              }
-              else {
-                res.send({
-                  success: true,
-                  messagage: ' User Post Created Successfully'
-                })
-              }
+              // }
+              // else {
+              //   res.send({
+              //     success: true,
+              //     messagage: ' User Post Created Successfully'
+              //   })
+              // }
             })
             .catch(err => {
               return res.status(200).json({
@@ -676,6 +676,7 @@ exports.updatePostStatus = (req, res) => {
   UserPost.findByIdAndUpdate(req.params.id, obj, {
     new: true
   }).then(result => {
+    let userid= result.user_id
     if (result.poststatus == 'Approved') {
       // const jobTitle = result.job_title;
       // const userId = result.user_id;
@@ -685,12 +686,17 @@ exports.updatePostStatus = (req, res) => {
           let issubadmin = users.subadmin;
  
           if (!issubadmin) {
+            
             users.forEach(element => {
+              if (element._id.equals(userid)) {
+                console.log('***************');
+                console.log('do not send notification');
+              } else{
               element.skills.forEach(skills => {
                 let regiatrationToken = element.registration_token;
                 sendNotifications(regiatrationToken, result, res);
               })
-              // }
+               }
             })
           }
           else {
