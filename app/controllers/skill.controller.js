@@ -1,7 +1,11 @@
 const SkillSchema = require("../models/skills.model");
 
 exports.createSkills = (req, res) => {
-  var skill = new SkillSchema(req.body);
+  let obj={
+    skill_title: req.body.skill_title.trim(),
+    skill_category:req.body.skill_category.trim()
+  }
+  var skill = new SkillSchema(obj);
   skill
     .save()
     .then(data => {
@@ -83,7 +87,11 @@ exports.getOneSkill=(req,res)=>{
     });
 }
 exports.updateSkill=(req,res)=>{
-  SkillSchema.findByIdAndUpdate(req.params.id,req.body).then(data=>{
+  let obj={
+    skill_title: req.body.skill_title.trim(),
+    skill_category:req.body.skill_category.trim()
+  }
+  SkillSchema.findByIdAndUpdate(req.params.id,obj).then(data=>{
     if(data){
       res.send({
         success:true,
