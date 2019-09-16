@@ -10,4 +10,5 @@ var SkillSchema = mongoose.Schema(
   }
 );
 
+
 module.exports = mongoose.model("skill", SkillSchema);
