@@ -31,7 +31,7 @@ exports.createUser = (req, res) => {
               })
             }
             else {
-              CreateUserData(req,res);
+              CreateUserData(req, res);
             }
           })
         }
@@ -42,18 +42,18 @@ exports.createUser = (req, res) => {
   })
 };
 
-function CreateUserData(req,res) {
+function CreateUserData(req, res) {
   console.log('.........');
-  
+
   console.log(req.body);
-  
+
   if (typeof req.file !== 'undefined') {
     // let imagePath = 'http://153.92.4.132:5000/' + req.file.path;
     // imagePath = imagePath.split('/images/').join('/')
     // console.log(imagePath);
     // let imagePath = req.file.path;
-    let imagePath =  req.file.path.replace('images/','')
-    const newUser = new UserSchema( {
+    let imagePath = req.file.path.replace('images/', '')
+    const newUser = new UserSchema({
       name: req.body.name,
       username: req.body.username,
       password: req.body.password,
@@ -63,8 +63,8 @@ function CreateUserData(req,res) {
       skills: req.body.skills,
       user_image: imagePath,
       registration_token: req.body.registration_token,
-      subadmin:req.body.subadmin,
-      subadmin_id:req.body.subadmin_id
+      subadmin: req.body.subadmin,
+      subadmin_id: req.body.subadmin_id
     });
     newUser
       .save()
@@ -97,8 +97,8 @@ function CreateUserData(req,res) {
       city: req.body.city,
       skills: req.body.skills,
       registration_token: req.body.registration_token,
-      subadmin:req.body.subadmin,
-      subadmin_id:req.body.subadmin_id
+      subadmin: req.body.subadmin,
+      subadmin_id: req.body.subadmin_id
     });
     newUser
       .save()
@@ -122,7 +122,7 @@ function CreateUserData(req,res) {
         });
       });
   }
- 
+
 }
 
 exports.userLogin = (req, res) => {
@@ -298,6 +298,7 @@ exports.getUserByEmail = (req, res) => {
 }
 
 exports.forgotPassword = (req, res) => {
+  console.log(req.body.email);
 
   UserSchema.find({
     email: req.body.email
@@ -315,7 +316,7 @@ exports.forgotPassword = (req, res) => {
         const mailOptions = {
           from: 'jobsproject.testing@gmail.com',
           to: req.body.email,
-          subject: 'Bla',
+          subject: 'Forget Password Request',
           text: 'https://updatepassword.herokuapp.com/'
         };
 
@@ -388,6 +389,34 @@ exports.skills = (req, res) => {
     })
 }
 
+exports.resetPassword = (req, res) => {
+  console.log(req.params.id);
+  console.log(req.body);
+  UserSchema.findOne({
+    _id: req.params.id
+  }).then(user => {
+    let newuser = user;
+    console.log(newuser);
+    if (newuser.password == req.body.oldpass) {
+      newuser.password = req.body.newpass;
+      UserSchema.findByIdAndUpdate(req.params.id, newuser, {
+        new: true
+      }).then(data => {
+        res.send({
+          success: true,
+          data: data
+        })
+      })
+    }
+    else {
+      res.send({
+        success: true,
+        message: 'Current Password not  match'
+      })
+    }
+  })
+
+}
 
 exports.updateRegistrationToken = (req, res) => {
   console.log(' i am here ... ');
@@ -415,7 +444,7 @@ exports.updateRegistrationToken = (req, res) => {
 
 exports.updateUser = (req, res) => {
   if (req.file !== undefined) {
-    let imagePath =  req.file.path.replace('images/','')
+    let imagePath = req.file.path.replace('images/', '')
     // let imagePath = 'https://job-portal-asad.herokuapp.com/' + req.file.path;
     // imagePath = imagePath.split('/images/').join('/');
     UserSchema.update({

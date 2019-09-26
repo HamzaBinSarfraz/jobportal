@@ -24,6 +24,8 @@ module.exports = app => {
 
   app.post('/user/userbyemail', User.getUserByEmail);
 
+  // Reset user password
+  app.post('/user/resetpassword/:id',User.resetPassword)
   // app.post('/user/sendnitification', User.sendNotification);
 
   // app.put('user/:id', User.updatePassword);
