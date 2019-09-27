@@ -3,6 +3,7 @@
 const UserSchema = require("../models/user.model");
 const UserPost = require("../models/user_post.model");
 const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
 
 
 
@@ -305,16 +306,14 @@ exports.forgotPassword = (req, res) => {
   })
     .then(data => {
       if (data.length > 0) {
-        const transporter = nodemailer.createTransport({
-          host: 'smtp.gmail.com',
-          port: 465,
-          secure: true, 
+        const transporter = nodemailer.createTransport(smtpTransport({
+       
           service: 'Gmail',
           auth: {
             user: 'jobsproject.testing@gmail.com',
             pass: 'jobsproject'
           }
-        });
+        }));
 
         const mailOptions = {
           from: 'jobsproject.testing@gmail.com',
