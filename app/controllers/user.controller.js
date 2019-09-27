@@ -306,6 +306,9 @@ exports.forgotPassword = (req, res) => {
     .then(data => {
       if (data.length > 0) {
         const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true, 
           service: 'Gmail',
           auth: {
             user: 'jobsproject.testing@gmail.com',
