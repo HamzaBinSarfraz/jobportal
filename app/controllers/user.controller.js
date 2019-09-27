@@ -304,6 +304,10 @@ exports.forgotPassword = (req, res) => {
     email: req.body.email
   })
     .then(data => {
+      console.log('................');
+      
+console.log(data[0]._id);
+
       if (data.length > 0) {
         const transporter = nodemailer.createTransport({
           service: 'Gmail',
@@ -317,7 +321,7 @@ exports.forgotPassword = (req, res) => {
           from: 'jobsproject.testing@gmail.com',
           to: req.body.email,
           subject: 'Forget Password Request',
-          text: 'https://updatepassword.herokuapp.com/'
+          text: 'https://adminpannel-62687.firebaseapp.com/forget/'+data[0]._id
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
