@@ -131,17 +131,17 @@ function sendNotifications(registrationToken, data, res) {
 
   admin.messaging().sendToDevice(registrationToken, payload, options)
     .then((response) => {
-      console.log("Successfully sent message:", response);
-      console.log("Error ::: ", response.results[0].error);
+      // console.log("Successfully sent message:", response);
+      // console.log("Error ::: ", response.results[0].error);
       res.status(200).json({
         status: true,
         message: "userpost created and notification send successfully"
       });
     })
     .catch((error) => {
-      console.log("Error sending message:", error);
+      // console.log("Error sending message:", error);
       res.status(200).json({
-        status: false,
+        status: true,
         message: err.message
       });
     });
