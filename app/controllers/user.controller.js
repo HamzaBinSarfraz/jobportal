@@ -304,9 +304,9 @@ exports.forgotPassword = (req, res) => {
     email: req.body.email
   })
     .then(data => {
-      console.log('................');
+     
       
-console.log(data[0]._id);
+;
 
       if (data.length > 0) {
         const transporter = nodemailer.createTransport({
