@@ -312,7 +312,10 @@ exports.forgotPassword = (req, res) => {
           auth: {
             user: 'jobsproject.testing@gmail.com',
             pass: 'jobsproject'
-          }
+          },
+          tls: {
+            rejectUnauthorized: true
+        }
         }));
 
         const mailOptions = {
