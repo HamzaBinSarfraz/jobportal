@@ -39,7 +39,7 @@ function PostCreation(req, res, obj) {
           const userId = data.user_id;
           User.find()
             .then(users => {
-              // if (!issubadmin) {
+              if (!issubadmin) {
                 users.forEach(element => {
                   // if (element._id.equals(userId)) {
                   //   console.log('***************');
@@ -49,17 +49,21 @@ function PostCreation(req, res, obj) {
                       console.log(skills);
                       console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
                       let regiatrationToken = element.registration_token;
+                      console.log('Token.........');
+                      console.log(regiatrationToken);
+                      
+                      
                       sendNotifications(regiatrationToken, data, res);
                     })
                   // }
                 })
-              // }
-              // else {
-              //   res.send({
-              //     success: true,
-              //     messagage: ' User Post Created Successfully'
-              //   })
-              // }
+              }
+              else {
+                res.send({
+                  success: true,
+                  messagage: ' User Post Created Successfully'
+                })
+              }
             })
             .catch(err => {
               return res.status(200).json({
@@ -681,30 +685,35 @@ exports.updatePostStatus = (req, res) => {
       // const jobTitle = result.job_title;
       // const userId = result.user_id;
       // let issubadmin = result.subadmin;
-      User.find()
+      User.find({registration_token: { $ne: null }})
         .then(users => {
           let issubadmin = users.subadmin;
  
-          if (!issubadmin) {
+          // if (!issubadmin) {
             
             users.forEach(element => {
-              if (element._id.equals(userid)) {
-                console.log('***************');
-                console.log('do not send notification');
-              } else{
-              element.skills.forEach(skills => {
+              // if (element._id.equals(userid)) {
+              //   console.log('***************');
+              //   console.log('do not send notification');
+              // } else{
+              // element.skills.forEach(skills => {
                 let regiatrationToken = element.registration_token;
+                console.log('regiatrationToken.............');
+                console.log(element.username);
+                
+                console.log(regiatrationToken);
+                
                 sendNotifications(regiatrationToken, result, res);
-              })
-               }
+              // })
+              //  }
             })
-          }
-          else {
-            res.send({
-              success: true,
-              messagage: ' Post Updated'
-            })
-          }
+          // }
+          // else {
+          //   res.send({
+          //     success: true,
+          //     messagage: ' Post Updated'
+          //   })
+          // }
         })
         .catch(err => {
           return res.status(200).json({
