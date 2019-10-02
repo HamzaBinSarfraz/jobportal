@@ -41,17 +41,17 @@ function PostCreation(req, res, obj) {
             .then(users => {
               // if (!issubadmin) {
                 users.forEach(element => {
-                  if (element._id.equals(userId)) {
-                    console.log('***************');
-                    console.log('do not send notification');
-                  } else {
+                  // if (element._id.equals(userId)) {
+                  //   console.log('***************');
+                  //   console.log('do not send notification');
+                  // } else {
                     element.skills.forEach(skills => {
                       console.log(skills);
                       console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
                       let regiatrationToken = element.registration_token;
                       sendNotifications(regiatrationToken, data, res);
                     })
-                  }
+                  // }
                 })
               // }
               // else {
@@ -131,18 +131,18 @@ function sendNotifications(registrationToken, data, res) {
 
   admin.messaging().sendToDevice(registrationToken, payload, options)
     .then((response) => {
-      // console.log("Successfully sent message:", response);
-      // console.log("Error ::: ", response.results[0].error);
-      res.status(200).json({
-        status: true,
-        message: "userpost created and notification send successfully"
-      });
+      console.log("Successfully sent message:", response);
+      console.log("Error ::: ", response.results[0].error);
+      // res.status(200).json({
+      //   status: true,
+      //   message: "userpost created and notification send successfully"
+      // });
     })
     .catch((error) => {
       // console.log("Error sending message:", error);
       res.status(200).json({
         status: true,
-        message: err.message
+        message: error.message
       });
     });
 }
