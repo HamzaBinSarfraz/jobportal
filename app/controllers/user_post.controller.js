@@ -692,11 +692,11 @@ exports.updatePostStatus = (req, res) => {
           // if (!issubadmin) {
             
             users.forEach(element => {
-              // if (element._id.equals(userid)) {
-              //   console.log('***************');
-              //   console.log('do not send notification');
-              // } else{
-              // element.skills.forEach(skills => {
+              if (element._id.equals(userid)) {
+                console.log('***************');
+                console.log('do not send notification');
+              } else{
+              element.skills.forEach(skills => {
                 let regiatrationToken = element.registration_token;
                 console.log('regiatrationToken.............');
                 console.log(element.username);
@@ -704,8 +704,8 @@ exports.updatePostStatus = (req, res) => {
                 console.log(regiatrationToken);
                 
                 sendNotifications(regiatrationToken, result, res);
-              // })
-              //  }
+              })
+               }
             })
           // }
           // else {
