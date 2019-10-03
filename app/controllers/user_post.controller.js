@@ -45,16 +45,16 @@ function PostCreation(req, res, obj) {
                   //   console.log('***************');
                   //   console.log('do not send notification');
                   // } else {
-                    element.skills.forEach(skills => {
-                      console.log(skills);
-                      console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
-                      let regiatrationToken = element.registration_token;
-                      console.log('Token.........');
-                      console.log(regiatrationToken);
-                      
-                      
-                      sendNotifications(regiatrationToken, data, res);
-                    })
+                  element.skills.forEach(skills => {
+                    console.log(skills);
+                    console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
+                    let regiatrationToken = element.registration_token;
+                    console.log('Token.........');
+                    console.log(regiatrationToken);
+
+
+                    sendNotifications(regiatrationToken, data, res);
+                  })
                   // }
                 })
               }
@@ -680,33 +680,33 @@ exports.updatePostStatus = (req, res) => {
   UserPost.findByIdAndUpdate(req.params.id, obj, {
     new: true
   }).then(result => {
-    let userid= result.user_id
+    let userid = result.user_id
     if (result.poststatus == 'Approved') {
-      // const jobTitle = result.job_title;
+      const jobTitle = result.job_title;
       // const userId = result.user_id;
       // let issubadmin = result.subadmin;
-      User.find({registration_token: { $ne: null }})
+      User.find({ registration_token: { $ne: null } })
         .then(users => {
           let issubadmin = users.subadmin;
- 
+
           // if (!issubadmin) {
-            
-            users.forEach(element => {
-              if (element._id.equals(userid)) {
-                console.log('***************');
-                console.log('do not send notification');
-              } else{
+
+          users.forEach(element => {
+            if (element._id.equals(userid)) {
+              console.log('***************');
+              console.log('do not send notification');
+            } else {
               element.skills.forEach(skills => {
+                console.log(skills.toLowerCase().includes(jobTitle.toLowerCase()));
                 let regiatrationToken = element.registration_token;
-                console.log('regiatrationToken.............');
-                console.log(element.username);
-                
                 console.log(regiatrationToken);
-                
-                sendNotifications(regiatrationToken, result, res);
+                if (skills.toLowerCase().includes(jobTitle.toLowerCase())) {
+                  sendNotifications(regiatrationToken, result, res);
+                }
+
               })
-               }
-            })
+            }
+          })
           // }
           // else {
           //   res.send({
