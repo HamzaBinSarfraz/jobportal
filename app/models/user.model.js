@@ -22,7 +22,7 @@ var UserSchema = mongoose.Schema(
       trim: true
     },
     contact_no: {
-      type: Number,
+      type: String,
       unique: true,
       require: true
     },
