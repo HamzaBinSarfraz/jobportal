@@ -307,19 +307,20 @@ exports.forgotPassword = (req, res) => {
     .then(data => {
       if (data.length > 0) {
         const transporter = nodemailer.createTransport(smtpTransport({
-       
-          service: 'Gmail',
+          host: 'smtp.zoho.com',
+          service: 'zoho',
+          secure: true,
           auth: {
-            user: 'jobsproject.testing@gmail.com',
-            pass: 'jobsproject'
+            user: 'juptechno@zoho.com',
+            pass: 'juptechno_123'
           },
-          tls: {
-            rejectUnauthorized: true
-        }
+        //   tls: {
+        //     rejectUnauthorized: true
+        // }
         }));
 
         const mailOptions = {
-          from: 'jobsproject.testing@gmail.com',
+          from: 'juptechno@zoho.com',
           to: req.body.email,
           subject: 'Forget Password Request',
           text: 'https://adminpannel-62687.firebaseapp.com/forget/' + data[0]._id
