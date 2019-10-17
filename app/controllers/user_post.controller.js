@@ -39,7 +39,7 @@ function PostCreation(req, res, obj) {
           const userId = data.user_id;
           User.find()
             .then(users => {
-              if (!issubadmin) {
+              if (issubadmin) {
                 users.forEach(element => {
                   // if (element._id.equals(userId)) {
                   //   console.log('***************');
@@ -51,9 +51,11 @@ function PostCreation(req, res, obj) {
                     let regiatrationToken = element.registration_token;
                     console.log('Token.........');
                     console.log(regiatrationToken);
+                    if (skills.toLowerCase().includes(jobTitle.toLowerCase())) {
+                      sendNotifications(regiatrationToken, data, res);
+                    }
 
-
-                    sendNotifications(regiatrationToken, data, res);
+                    // sendNotifications(regiatrationToken, data, res);
                   })
                   // }
                 })
