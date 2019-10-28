@@ -139,10 +139,10 @@ function sendNotifications(registrationToken, data, res) {
     .then((response) => {
       console.log("Successfully sent message:", response);
       console.log("Error ::: ", response.results[0].error);
-      // res.status(200).json({
-      //   status: true,
-      //   message: "userpost created and notification send successfully"
-      // });
+      res.status(200).json({
+        status: true,
+        message: "userpost created and notification send successfully"
+      });
     })
     .catch((error) => {
       // console.log("Error sending message:", error);
